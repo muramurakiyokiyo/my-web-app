@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useImmer } from 'use-immer';
 import { CharacterCard } from './components/CharacterCard';
 import type { Character } from './types/character';
@@ -77,6 +77,33 @@ function applyDamage(character: Character, attackPower: number): void {
 function App() {
   const [characters, updateCharacters] = useImmer<Character[]>(initialCharacters);
   const [selectedCharId, setSelectedCharId] = useState<string | null>(null);
+
+  // HPが0以下のキャラクターを1秒後に削除
+  useEffect(() => {
+    const deadCharacters = characters.filter(char => char.stats.hp <= 0);
+    
+    if (deadCharacters.length > 0) {
+      const timers = deadCharacters.map(char => {
+        return setTimeout(() => {
+          updateCharacters((draft: Character[]) => {
+            const index = draft.findIndex((c: Character) => c.id === char.id);
+            if (index !== -1) {
+              draft.splice(index, 1);
+            }
+          });
+          
+          // 選択中のキャラクターが削除された場合、選択を解除
+          if (selectedCharId === char.id) {
+            setSelectedCharId(null);
+          }
+        }, 1000); // 1秒後に削除
+      });
+
+      return () => {
+        timers.forEach(timer => clearTimeout(timer));
+      };
+    }
+  }, [characters, selectedCharId, updateCharacters]);
 
   const handleSelectCharacter = (id: string) => {
     setSelectedCharId(id);
