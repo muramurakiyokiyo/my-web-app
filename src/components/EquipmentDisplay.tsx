@@ -29,7 +29,7 @@ export const EquipmentDisplay: React.FC<EquipmentDisplayProps> = ({ character })
       <div className={styles.equipmentSection}>
         <div className={styles.equipmentLabel}>防具:</div>
         <div className={styles.equipmentValue}>
-          {equippedArmor ? `Armor ID: ${equippedArmor.id} (+${equippedArmor.defence})` : '未装備'}
+          {equippedArmor ? `${equippedArmor.name} (+${equippedArmor.defence})` : '未装備'}
         </div>
       </div>
       <div className={styles.equipmentSection}>

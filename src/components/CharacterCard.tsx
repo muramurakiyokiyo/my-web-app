@@ -72,7 +72,7 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
         <div>攻撃力: <span className={styles.statValue}>{calculatedStats.attack}</span></div>
         <div>防御力: <span className={styles.statValue}>{defenseDisplay}</span></div>
         {character.equipment?.armor !== undefined && (
-          <div>Armor ID: <span className={styles.statValue}>{character.equipment.armor}</span></div>
+          <div>防具: <span className={styles.statValue}>{armors.find(a => a.id === character.equipment!.armor)?.name || '不明'}</span></div>
         )}
       </div>
       

@@ -21,6 +21,7 @@ export interface CalculatedStats {
 // Armor
 export interface Armor {
   id: number;
+  name: string;
   defence: number;
 }
 

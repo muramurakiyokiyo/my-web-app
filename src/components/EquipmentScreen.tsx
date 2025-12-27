@@ -48,7 +48,7 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                       onClick={() => onEquip('armor', armor.id)}
                     >
                       <div className={styles.equipmentItemHeader}>
-                        <div className={styles.equipmentItemId}>Armor ID: {armor.id}</div>
+                        <div className={styles.equipmentItemName}>{armor.name}</div>
                         {isEquipped && <div className={styles.equipmentItemEquippedBadge}>装備中</div>}
                       </div>
                       <div className={styles.equipmentItemStat}>防御力: +{armor.defence}</div>
