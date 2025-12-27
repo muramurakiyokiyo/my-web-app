@@ -79,6 +79,7 @@ function applyDamage(character: Character, attackPower: number): void {
 function App() {
   const [characters, updateCharacters] = useImmer<Character[]>(initialCharacters);
   const [selectedCharId, setSelectedCharId] = useState<string | null>(null);
+  const [attackPower, setAttackPower] = useState<number>(25);
 
   const handleSelectCharacter = (id: string) => {
     setSelectedCharId(id);
@@ -87,7 +88,7 @@ function App() {
     updateCharacters((draft: Character[]) => {
       const character = draft.find((char: Character) => char.id === id);
       if (character) {
-        applyDamage(character, 25);
+        applyDamage(character, attackPower);
         
         // HPが0以下になったら即座に削除（Framer Motionのexitアニメーションで1秒間暗く表示される）
         if (character.stats.hp <= 0) {
@@ -108,6 +109,19 @@ function App() {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>キャラクターリスト</h1>
+      <div className={styles.attackPowerSection}>
+        <label htmlFor="attackPower" className={styles.attackPowerLabel}>
+          攻撃力:
+        </label>
+        <input
+          id="attackPower"
+          type="number"
+          min="0"
+          value={attackPower}
+          onChange={(e) => setAttackPower(Number(e.target.value) || 0)}
+          className={styles.attackPowerInput}
+        />
+      </div>
       <div className={styles.cardList}>
         <AnimatePresence mode="popLayout">
           {characters.map(char => (

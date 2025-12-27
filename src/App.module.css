@@ -47,6 +47,40 @@
   background-color: #6b7280;
 }
 
+.attackPowerSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.attackPowerLabel {
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.attackPowerInput {
+  background-color: #1f2937;
+  color: white;
+  border: 2px solid #374151;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  width: 80px;
+  transition: border-color 0.2s;
+}
+
+.attackPowerInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.attackPowerInput::-webkit-inner-spin-button,
+.attackPowerInput::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
 .selectedText {
   color: white;
   margin-top: 1rem;
