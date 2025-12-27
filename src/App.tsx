@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CharacterCard } from './components/CharacterCard';
 import type { Character } from './types/character';
 import './index.css';
+import styles from './App.module.css';
 
 // テスト用のダミーデータ
 const initialCharacters: Character[] = [
@@ -29,9 +30,9 @@ function App() {
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4">
-      <h1 className="text-3xl font-bold text-white mb-8">キャラクターリスト</h1>
-      <div className="flex flex-wrap justify-center gap-4">
+    <div className={styles.container}>
+      <h1 className={styles.title}>キャラクターリスト</h1>
+      <div className={styles.cardList}>
         {characters.map(char => (
           <CharacterCard 
             key={char.id} 
@@ -41,7 +42,7 @@ function App() {
         ))}
       </div>
       {selectedCharId && (
-        <p className="text-white mt-4">
+        <p className={styles.selectedText}>
           現在選択中: {characters.find(c => c.id === selectedCharId)?.name}
         </p>
       )}
