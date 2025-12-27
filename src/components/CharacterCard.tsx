@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import type { Character } from '../types/character';
 import { getCalculatedStats } from '../utils/characterStats';
@@ -13,6 +13,12 @@ interface CharacterCardProps {
 }
 
 export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelect, onOpenEquipment }) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const calculatedStats = getCalculatedStats(character.stats, character.equipment);
   const borderClass = character.stats.hp < character.stats.maxHp * 0.2 
     ? styles.cardBorderDanger 
@@ -27,6 +33,9 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
   const defenseDisplay = armorDefense > 0 
     ? `${baseDefense}+${armorDefense}` 
     : `${baseDefense}`;
+
+  // マウントされる前は何も出さない
+  if (!isMounted) return null;
 
   return (
     <motion.div 
@@ -87,7 +96,7 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
         }}
         disabled={isDead}
       >
-        装備変更
+        装備変更！
       </button>
     </motion.div>
   );
