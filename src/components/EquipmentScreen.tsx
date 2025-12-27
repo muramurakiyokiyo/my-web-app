@@ -4,6 +4,7 @@ import { armors } from '../data/armors';
 import { weapons } from '../data/weapons';
 import { getCalculatedStats } from '../utils/characterStats';
 import { CalculatedStatsWindow } from './CalculatedStatsWindow';
+import { EquipmentDisplay } from './EquipmentDisplay';
 import styles from './EquipmentScreen.module.css';
 
 interface EquipmentScreenProps {
@@ -107,6 +108,7 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
               calculatedStats={calculatedStats}
               baseStats={character.stats}
             />
+            <EquipmentDisplay character={character} />
           </div>
         </div>
 

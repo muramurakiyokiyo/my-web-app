@@ -191,3 +191,30 @@
   background-color: #4b5563; /* bg-gray-600 */
 }
 
+.cardWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 350px;
+}
+
+.equipmentTooltip {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 1rem);
+  z-index: 100;
+  min-width: 250px;
+  pointer-events: none;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+

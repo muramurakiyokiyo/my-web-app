@@ -97,6 +97,10 @@
 
 .statsDisplaySection {
   flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: flex-start;
 }
 
 .equipmentCategory {
