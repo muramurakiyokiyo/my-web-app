@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useImmer } from 'use-immer';
 import { AnimatePresence } from 'framer-motion';
 import { CharacterCard } from './components/CharacterCard';
+import { EquipmentScreen } from './components/EquipmentScreen';
 import type { Character } from './types/character';
 import { getCalculatedStats } from './utils/characterStats';
 import './index.css';
@@ -92,6 +93,7 @@ function App() {
   const [characters, updateCharacters] = useImmer<Character[]>(initialCharacters);
   const [selectedCharId, setSelectedCharId] = useState<string | null>(null);
   const [attackPower, setAttackPower] = useState<number>(25);
+  const [equipmentCharacterId, setEquipmentCharacterId] = useState<string | null>(null);
 
   const handleSelectCharacter = (id: string) => {
     setSelectedCharId(id);
@@ -118,9 +120,19 @@ function App() {
     });
   };
 
-  const handleChangeEquipment = (characterId: string, armorId: number) => {
+  const handleOpenEquipment = (characterId: string) => {
+    setEquipmentCharacterId(characterId);
+  };
+
+  const handleCloseEquipment = () => {
+    setEquipmentCharacterId(null);
+  };
+
+  const handleEquip = (armorId: number) => {
+    if (!equipmentCharacterId) return;
+    
     updateCharacters((draft: Character[]) => {
-      const character = draft.find((char: Character) => char.id === characterId);
+      const character = draft.find((char: Character) => char.id === equipmentCharacterId);
       if (character) {
         // 装備を初期化していない場合は初期化
         if (!character.equipment) {
@@ -132,6 +144,10 @@ function App() {
       }
     });
   };
+
+  const equipmentCharacter = equipmentCharacterId 
+    ? characters.find(c => c.id === equipmentCharacterId)
+    : null;
 
   return (
     <div className={styles.container}>
@@ -156,7 +172,7 @@ function App() {
               key={char.id} 
               character={char} 
               onSelect={handleSelectCharacter}
-              onChangeEquipment={handleChangeEquipment}
+              onOpenEquipment={handleOpenEquipment}
             />
           ))}
         </AnimatePresence>
@@ -165,6 +181,13 @@ function App() {
         <p className={styles.selectedText}>
           現在選択中: {characters.find(c => c.id === selectedCharId)?.name}
         </p>
+      )}
+      {equipmentCharacter && (
+        <EquipmentScreen
+          character={equipmentCharacter}
+          onEquip={handleEquip}
+          onClose={handleCloseEquipment}
+        />
       )}
     </div>
   );
