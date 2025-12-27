@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Armor, Weapon } from '../types/character';
-import { EquipPropID, getEquipPropSection, getEquipPropComparisonType, EquipPropComparisonType } from '../types/character';
+import type { Armor, Weapon, EquipProperty } from '../types/character';
+import { getEquipPropSpec, EquipPropComparisonType } from '../types/character';
 import { getEquipPropIDs, getEquipProperty } from '../utils/equipment';
 import styles from './EquipmentItemParams.module.css';
 
@@ -21,18 +21,14 @@ export const EquipmentItemParams: React.FC<EquipmentItemParamsProps> = ({ item, 
   const propIDs = getEquipPropIDs(item);
 
   // パラメータの値を比較して色を決定する関数
-  const getValueColorClass = (propID: EquipPropID, currentValue: number | string): string => {
-    if (!equippedItem || typeof currentValue !== 'number') {
+  const getValueColorClass = (property: EquipProperty, equippedProperty: EquipProperty | null): string => {
+    if (!equippedProperty || typeof property.value !== 'number' || typeof equippedProperty.value !== 'number') {
       return styles.paramValue;
     }
 
-    const equippedProperty = getEquipProperty(equippedItem, propID);
-    if (!equippedProperty || typeof equippedProperty.value !== 'number') {
-      return styles.paramValue;
-    }
-
+    const currentValue = property.value;
     const equippedValue = equippedProperty.value;
-    const comparisonType = getEquipPropComparisonType(propID);
+    const comparisonType = property.spec.comparisonType;
     
     // 優劣判定なしの場合は色分けしない
     if (comparisonType === EquipPropComparisonType.None) {
@@ -63,16 +59,17 @@ export const EquipmentItemParams: React.FC<EquipmentItemParamsProps> = ({ item, 
       <h4 className={styles.paramsTitle}>{item.name}</h4>
       <div className={styles.paramsList}>
         {propIDs
-          .filter(propID => getEquipPropSection(propID) === 'stat')
+          .filter(propID => getEquipPropSpec(propID).section === 'stat')
           .map((propID) => {
             const property = getEquipProperty(item, propID);
             if (!property) return null;
 
-            const valueColorClass = getValueColorClass(propID, property.value);
+            const equippedProperty = equippedItem ? getEquipProperty(equippedItem, propID) : null;
+            const valueColorClass = getValueColorClass(property, equippedProperty);
 
             return (
               <div key={propID} className={styles.paramItem}>
-                <span className={styles.paramLabel}>{property.displayName}:</span>
+                <span className={styles.paramLabel}>{property.spec.displayName}:</span>
                 <span className={valueColorClass}>
                   {typeof property.value === 'number' ? `+${property.value}` : property.value}
                 </span>

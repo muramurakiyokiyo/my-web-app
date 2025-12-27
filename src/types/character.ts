@@ -61,53 +61,52 @@ export const EquipPropComparisonType = {
 
 export type EquipPropComparisonType = typeof EquipPropComparisonType[keyof typeof EquipPropComparisonType];
 
-// EquipPropIDから優劣判定タイプを取得する関数
-export function getEquipPropComparisonType(propID: EquipPropID): EquipPropComparisonType {
-  if (propID === EquipPropID.Name) {
-    return EquipPropComparisonType.None; // 名前は優劣判定なし
-  } else if (propID === EquipPropID.Weight) {
-    return EquipPropComparisonType.Lower; // 重量は値が小さい方が高性能
-  }
-  // その他のパラメータ（防御力、攻撃力など）は値が大きい方が高性能
-  return EquipPropComparisonType.Higher;
+// EquipPropIDの仕様
+interface EquipPropSpec {
+  displayName: string;
+  comparisonType: EquipPropComparisonType;
+  className: string; // CSSクラス名のキー
+  section: 'header' | 'stat'; // 表示セクション
+}
+
+// EquipPropIDに対応する仕様テーブル
+const equipPropSpecs: Record<EquipPropID, EquipPropSpec> = {
+  [EquipPropID.Name]: {
+    displayName: '名前',
+    comparisonType: EquipPropComparisonType.None,
+    className: 'equipmentItemName',
+    section: 'header',
+  },
+  [EquipPropID.Defence]: {
+    displayName: '防御力',
+    comparisonType: EquipPropComparisonType.Higher,
+    className: '',
+    section: 'stat',
+  },
+  [EquipPropID.Attack]: {
+    displayName: '攻撃力',
+    comparisonType: EquipPropComparisonType.Higher,
+    className: '',
+    section: 'stat',
+  },
+  [EquipPropID.Weight]: {
+    displayName: '重量',
+    comparisonType: EquipPropComparisonType.Lower,
+    className: '',
+    section: 'stat',
+  },
+};
+
+// EquipPropIDから仕様を一括取得する関数
+export function getEquipPropSpec(propID: EquipPropID): EquipPropSpec {
+  return equipPropSpecs[propID];
 }
 
 // 装備品のパラメータ（表示名と値）
 export interface EquipProperty {
   id: EquipPropID;
-  displayName: string;
+  spec: EquipPropSpec; // EquipPropIDの仕様
   value: number | string;
-}
-
-// EquipPropIDから表示名を取得する関数
-export function getEquipPropDisplayName(propID: EquipPropID): string {
-  if (propID === EquipPropID.Name) {
-    return '名前';
-  } else if (propID === EquipPropID.Defence) {
-    return '防御力';
-  } else if (propID === EquipPropID.Attack) {
-    return '攻撃力';
-  } else if (propID === EquipPropID.Weight) {
-    return '重量';
-  }
-  return '';
-}
-
-// EquipPropIDからCSSクラス名のキーを取得する関数
-export function getEquipPropClassName(propID: EquipPropID): string {
-  if (propID === EquipPropID.Name) {
-    return 'equipmentItemName';
-  }
-  // Defence と Attack は equipmentItemStat 内で表示されるため、デフォルトは空文字
-  return '';
-}
-
-// EquipPropIDから表示セクションを取得する関数
-export function getEquipPropSection(propID: EquipPropID): 'header' | 'stat' {
-  if (propID === EquipPropID.Name) {
-    return 'header';
-  }
-  return 'stat';
 }
 
 // HPやMPなどのステータス（基本値、equipmentから算出される値は含まない）

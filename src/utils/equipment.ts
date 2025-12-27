@@ -1,5 +1,5 @@
 import type { EquipType, EquipSlot, Armor, Weapon, Equipment, EquipPropID, EquipProperty } from '../types/character';
-import { EquipPropID as EquipPropIDConst, getEquipPropDisplayName } from '../types/character';
+import { EquipPropID as EquipPropIDConst, getEquipPropSpec } from '../types/character';
 import { armors } from '../data/armors';
 import { weapons } from '../data/weapons';
 
@@ -55,28 +55,30 @@ export function getEquipPropIDs(item: Armor | Weapon): EquipPropID[] {
 
 // 装備品からEquipPropIDを指定してEquipPropertyを取得する関数
 export function getEquipProperty(item: Armor | Weapon, propID: EquipPropID): EquipProperty | null {
+  const spec = getEquipPropSpec(propID);
+  
   if (propID === EquipPropIDConst.Name) {
     return {
       id: propID,
-      displayName: getEquipPropDisplayName(propID),
+      spec: spec,
       value: item.name,
     };
   } else if (propID === EquipPropIDConst.Defence && 'defence' in item) {
     return {
       id: propID,
-      displayName: getEquipPropDisplayName(propID),
+      spec: spec,
       value: (item as Armor).defence,
     };
   } else if (propID === EquipPropIDConst.Attack && 'attack' in item) {
     return {
       id: propID,
-      displayName: getEquipPropDisplayName(propID),
+      spec: spec,
       value: (item as Weapon).attack,
     };
   } else if (propID === EquipPropIDConst.Weight) {
     return {
       id: propID,
-      displayName: getEquipPropDisplayName(propID),
+      spec: spec,
       value: item.weight,
     };
   }

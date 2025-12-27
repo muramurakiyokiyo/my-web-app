@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import type { Character, Armor, Weapon } from '../types/character';
-import { EquipSlot, equipSlots, getEquipType, getEquipSlotDisplayName, getEquipPropClassName, getEquipPropSection } from '../types/character';
+import { EquipSlot, equipSlots, getEquipType, getEquipSlotDisplayName, getEquipPropSpec } from '../types/character';
 import { getCalculatedStats } from '../utils/characterStats';
 import { getEquipmentList, getEquippedId, getEquipPropIDs, getEquipProperty, getEquippedItem } from '../utils/equipment';
 import { CalculatedStatsWindow } from './CalculatedStatsWindow';
@@ -78,13 +78,12 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                       >
                       <div className={styles.equipmentItemHeader}>
                         {propIDs
-                          .filter(propID => getEquipPropSection(propID) === 'header')
+                          .filter(propID => getEquipPropSpec(propID).section === 'header')
                           .map((propID) => {
                             const property = getEquipProperty(equipmentItem, propID);
                             if (!property) return null;
                             
-                            const classNameKey = getEquipPropClassName(propID);
-                            const className = classNameKey ? styles[classNameKey as keyof typeof styles] : '';
+                            const className = property.spec.className ? styles[property.spec.className as keyof typeof styles] : '';
                             
                             return (
                               <div key={propID} className={className}>{property.value}</div>
@@ -94,17 +93,16 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                       </div>
                       <div className={styles.equipmentItemStat}>
                         {propIDs
-                          .filter(propID => getEquipPropSection(propID) === 'stat')
+                          .filter(propID => getEquipPropSpec(propID).section === 'stat')
                           .map((propID) => {
                             const property = getEquipProperty(equipmentItem, propID);
                             if (!property) return null;
                             
-                            const classNameKey = getEquipPropClassName(propID);
-                            const className = classNameKey ? styles[classNameKey as keyof typeof styles] : '';
+                            const className = property.spec.className ? styles[property.spec.className as keyof typeof styles] : '';
                             
                             return (
                               <div key={propID} className={className}>
-                                {property.displayName}: +{property.value}
+                                {property.spec.displayName}: +{property.value}
                               </div>
                             );
                           })}
