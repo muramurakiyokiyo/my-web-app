@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import type { Character, Armor, Weapon } from '../types/character';
-import { EquipSlot, equipSlots, getEquipType, getEquipSlotDisplayName } from '../types/character';
+import { EquipSlot, equipSlots, getEquipType, getEquipSlotDisplayName, getEquipPropClassName, getEquipPropSection } from '../types/character';
 import { getCalculatedStats } from '../utils/characterStats';
 import { getEquipmentList, getEquippedId, getEquipPropIDs, getEquipProperty } from '../utils/equipment';
 import { CalculatedStatsWindow } from './CalculatedStatsWindow';
@@ -72,17 +72,37 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                       onClick={() => onEquip(activeTab, item.id)}
                     >
                       <div className={styles.equipmentItemHeader}>
-                        <div className={styles.equipmentItemName}>{equipmentItem.name}</div>
+                        {propIDs
+                          .filter(propID => getEquipPropSection(propID) === 'header')
+                          .map((propID) => {
+                            const property = getEquipProperty(equipmentItem, propID);
+                            if (!property) return null;
+                            
+                            const classNameKey = getEquipPropClassName(propID);
+                            const className = classNameKey ? styles[classNameKey as keyof typeof styles] : '';
+                            
+                            return (
+                              <div key={propID} className={className}>{property.value}</div>
+                            );
+                          })}
                         {isEquipped && <div className={styles.equipmentItemEquippedBadge}>装備中</div>}
                       </div>
                       <div className={styles.equipmentItemStat}>
-                        {propIDs.map((propID) => {
-                          const property = getEquipProperty(equipmentItem, propID);
-                          if (property) {
-                            return `${property.displayName}: +${property.value}`;
-                          }
-                          return null;
-                        })}
+                        {propIDs
+                          .filter(propID => getEquipPropSection(propID) === 'stat')
+                          .map((propID) => {
+                            const property = getEquipProperty(equipmentItem, propID);
+                            if (!property) return null;
+                            
+                            const classNameKey = getEquipPropClassName(propID);
+                            const className = classNameKey ? styles[classNameKey as keyof typeof styles] : '';
+                            
+                            return (
+                              <div key={propID} className={className}>
+                                {property.displayName}: +{property.value}
+                              </div>
+                            );
+                          })}
                       </div>
                     </button>
                   );

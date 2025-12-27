@@ -44,6 +44,7 @@ export function getEquipSlotDisplayName(slot: EquipSlot): string {
 
 // 装備品のパラメータID
 export const EquipPropID = {
+  Name: 'name',
   Defence: 'defence',
   Attack: 'attack',
 } as const;
@@ -54,17 +55,36 @@ export type EquipPropID = typeof EquipPropID[keyof typeof EquipPropID];
 export interface EquipProperty {
   id: EquipPropID;
   displayName: string;
-  value: number;
+  value: number | string;
 }
 
 // EquipPropIDから表示名を取得する関数
 export function getEquipPropDisplayName(propID: EquipPropID): string {
-  if (propID === EquipPropID.Defence) {
+  if (propID === EquipPropID.Name) {
+    return '名前';
+  } else if (propID === EquipPropID.Defence) {
     return '防御力';
   } else if (propID === EquipPropID.Attack) {
     return '攻撃力';
   }
   return '';
+}
+
+// EquipPropIDからCSSクラス名のキーを取得する関数
+export function getEquipPropClassName(propID: EquipPropID): string {
+  if (propID === EquipPropID.Name) {
+    return 'equipmentItemName';
+  }
+  // Defence と Attack は equipmentItemStat 内で表示されるため、デフォルトは空文字
+  return '';
+}
+
+// EquipPropIDから表示セクションを取得する関数
+export function getEquipPropSection(propID: EquipPropID): 'header' | 'stat' {
+  if (propID === EquipPropID.Name) {
+    return 'header';
+  }
+  return 'stat';
 }
 
 // HPやMPなどのステータス（基本値、equipmentから算出される値は含まない）

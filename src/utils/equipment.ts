@@ -37,19 +37,28 @@ export function getEquippedItem(equipment: Equipment | undefined, slot: EquipSlo
   }
 }
 
-// 装備品からEquipPropIDリストを取得する関数
+// 装備品からEquipPropIDリストを取得する関数（名前を含む）
 export function getEquipPropIDs(item: Armor | Weapon): EquipPropID[] {
+  const propIDs: EquipPropID[] = [EquipPropIDConst.Name];
+  
   if ('defence' in item) {
-    return [EquipPropIDConst.Defence];
+    propIDs.push(EquipPropIDConst.Defence);
   } else if ('attack' in item) {
-    return [EquipPropIDConst.Attack];
+    propIDs.push(EquipPropIDConst.Attack);
   }
-  return [];
+  
+  return propIDs;
 }
 
 // 装備品からEquipPropIDを指定してEquipPropertyを取得する関数
 export function getEquipProperty(item: Armor | Weapon, propID: EquipPropID): EquipProperty | null {
-  if (propID === EquipPropIDConst.Defence && 'defence' in item) {
+  if (propID === EquipPropIDConst.Name) {
+    return {
+      id: propID,
+      displayName: getEquipPropDisplayName(propID),
+      value: item.name,
+    };
+  } else if (propID === EquipPropIDConst.Defence && 'defence' in item) {
     return {
       id: propID,
       displayName: getEquipPropDisplayName(propID),
