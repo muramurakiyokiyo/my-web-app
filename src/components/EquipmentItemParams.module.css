@@ -37,6 +37,14 @@
   font-weight: 600;
 }
 
+.paramValueHigher {
+  color: #3b82f6; /* text-blue-500 */
+}
+
+.paramValueLower {
+  color: #ef4444; /* text-red-500 */
+}
+
 .paramsEmpty {
   color: #9ca3af; /* text-gray-400 */
   font-size: 0.875rem;

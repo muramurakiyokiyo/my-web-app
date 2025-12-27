@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { Character, Armor, Weapon } from '../types/character';
 import { EquipSlot, equipSlots, getEquipType, getEquipSlotDisplayName, getEquipPropClassName, getEquipPropSection } from '../types/character';
 import { getCalculatedStats } from '../utils/characterStats';
-import { getEquipmentList, getEquippedId, getEquipPropIDs, getEquipProperty } from '../utils/equipment';
+import { getEquipmentList, getEquippedId, getEquipPropIDs, getEquipProperty, getEquippedItem } from '../utils/equipment';
 import { CalculatedStatsWindow } from './CalculatedStatsWindow';
 import { EquipmentDisplay } from './EquipmentDisplay';
 import { EquipmentItemParams } from './EquipmentItemParams';
@@ -121,6 +121,11 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                         : (equippedId !== undefined
                             ? (equipmentList.find(item => item.id === equippedId) as Armor | Weapon | null)
                             : null)
+                    }
+                    equippedItem={
+                      equippedId !== undefined
+                        ? getEquippedItem(character.equipment, activeTab)
+                        : null
                     }
                   />
                 </div>
