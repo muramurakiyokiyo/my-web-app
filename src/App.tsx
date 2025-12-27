@@ -69,12 +69,26 @@ const initialCharacters: Character[] = [
 ];
 
 function App() {
-  const [characters] = useState<Character[]>(initialCharacters);
+  const [characters, setCharacters] = useState<Character[]>(initialCharacters);
   const [selectedCharId, setSelectedCharId] = useState<string | null>(null);
 
   const handleSelectCharacter = (id: string) => {
     setSelectedCharId(id);
-    alert(`選択されたキャラクター: ${characters.find(c => c.id === id)?.name}`);
+    
+    // HPを10減らす
+    setCharacters(prevCharacters =>
+      prevCharacters.map(char =>
+        char.id === id
+          ? {
+              ...char,
+              stats: {
+                ...char.stats,
+                hp: Math.max(0, char.stats.hp - 10), // HPが0未満にならないように制限
+              },
+            }
+          : char
+      )
+    );
   };
 
   return (
