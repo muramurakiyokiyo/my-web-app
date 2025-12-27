@@ -1,5 +1,5 @@
-import type { CharacterStats, Equipment, CalculatedStats } from '../types/character';
-import { equipSlots, EquipPropID } from '../types/character';
+import type { CharacterStats, Equipment, CalculatedStats, GameProperty } from '../types/character';
+import { equipSlots, EquipPropID, GamePropID, getGamePropSpec } from '../types/character';
 import { getEquippedProperty } from './equipment';
 
 // ステータスと装備から、最終的なステータスを算出する関数
@@ -40,3 +40,33 @@ export function getCalculatedStats(stats: CharacterStats, equipment: Equipment |
   };
 }
 
+// CalculatedStatsをGamePropertyの配列に変換する関数
+export function getCalculatedStatsAsProperties(stats: CalculatedStats): GameProperty[] {
+  return [
+    {
+      id: GamePropID.HP,
+      spec: getGamePropSpec(GamePropID.HP),
+      value: `${stats.hp} / ${stats.maxHp}`,
+    },
+    {
+      id: GamePropID.MP,
+      spec: getGamePropSpec(GamePropID.MP),
+      value: `${stats.mp} / ${stats.maxMp}`,
+    },
+    {
+      id: GamePropID.Attack,
+      spec: getGamePropSpec(GamePropID.Attack),
+      value: stats.attack,
+    },
+    {
+      id: GamePropID.Defense,
+      spec: getGamePropSpec(GamePropID.Defense),
+      value: stats.defense,
+    },
+    {
+      id: GamePropID.TotalWeight,
+      spec: getGamePropSpec(GamePropID.TotalWeight),
+      value: stats.totalWeight,
+    },
+  ];
+}

@@ -25,7 +25,24 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
   const equipmentList = useMemo(() => getEquipmentList(equipType), [equipType]);
   const equippedId = useMemo(() => getEquippedId(character.equipment, activeTab), [character.equipment, activeTab]);
 
-  const calculatedStats = getCalculatedStats(character.stats, character.equipment);
+  const currentStats = useMemo(() => getCalculatedStats(character.stats, character.equipment), [character]);
+
+  // 表示するステータスを決定（ホバー中の装備品がある場合は仮装備したステータス、なければ現在のステータス）
+  const previewStats = useMemo(() => {
+    if (hoveredItemId !== null && hoveredItemId !== equippedId) {
+      // 仮想的な装備状態を作成
+      const tempEquipment = { ...character.equipment };
+      if (activeTab === EquipSlot.Armor) {
+        tempEquipment.armor = hoveredItemId;
+      } else if (activeTab === EquipSlot.RightHandWeapon) {
+        tempEquipment.rightHandWeapon = hoveredItemId;
+      } else if (activeTab === EquipSlot.LeftHandWeapon) {
+        tempEquipment.leftHandWeapon = hoveredItemId;
+      }
+      return getCalculatedStats(character.stats, tempEquipment);
+    }
+    return null;
+  }, [character, activeTab, hoveredItemId, equippedId]);
 
   return (
     <div className={styles.equipmentScreen}>
@@ -135,8 +152,8 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
 
           <div className={styles.statsDisplaySection}>
             <CalculatedStatsWindow
-              calculatedStats={calculatedStats}
-              baseStats={character.stats}
+              calculatedStats={previewStats || currentStats}
+              compareStats={previewStats ? currentStats : undefined}
             />
             <EquipmentDisplay character={character} />
           </div>
