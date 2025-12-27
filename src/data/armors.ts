@@ -22,5 +22,6 @@ export const armors: Armor[] = [
     defence: 15,
     weight: 15,
     imageUrl: 'https://img.icons8.com/color/96/shield.png',
+    modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/DamagedHelmet/glTF-Binary/DamagedHelmet.glb',
   },
 ];

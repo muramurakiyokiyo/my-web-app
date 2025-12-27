@@ -196,6 +196,7 @@ export interface Armor {
   defence: number;
   weight: number;
   imageUrl?: string; // 装備品の画像URL
+  modelUrl?: string; // 3DモデルのURL (GLB/GLTF)
 }
 
 // Weapon
@@ -205,6 +206,7 @@ export interface Weapon {
   name: string;
   weight: number;
   imageUrl?: string; // 装備品の画像URL
+  modelUrl?: string; // 3Dモデル의 URL (GLB/GLTF)
 }
 
 // 装備設定

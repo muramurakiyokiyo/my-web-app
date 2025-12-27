@@ -22,6 +22,7 @@ export const weapons: Weapon[] = [
     attack: 15,
     weight: 8,
     imageUrl: 'https://img.icons8.com/color/96/sword.png',
+    modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb',
   },
   {
     id: 3,
@@ -29,6 +30,7 @@ export const weapons: Weapon[] = [
     attack: 8,
     weight: 3,
     imageUrl: 'https://img.icons8.com/color/96/sword.png',
+    modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF-Binary/Avocado.glb',
   },
   {
     id: 4,

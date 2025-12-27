@@ -6,6 +6,7 @@ import { getEquipmentList, getEquippedId, getEquippedItem } from '../utils/equip
 import { CalculatedStatsWindow } from './CalculatedStatsWindow';
 import { EquipmentDisplay } from './EquipmentDisplay';
 import { EquipmentItemParams } from './EquipmentItemParams';
+import { ModelViewer } from './ModelViewer';
 import styles from './EquipmentScreen.module.css';
 
 type EquipmentTab = EquipSlot;
@@ -108,6 +109,24 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                   })}
                 </div>
                 <div className={styles.paramsDisplay}>
+                  <div className={styles.modelViewerSection}>
+                    <ModelViewer
+                      modelUrl={
+                        hoveredItemId !== null
+                          ? (equipmentList.find(item => item.id === hoveredItemId) as Armor | Weapon | null)?.modelUrl
+                          : (equippedId !== undefined
+                              ? (equipmentList.find(item => item.id === equippedId) as Armor | Weapon | null)?.modelUrl
+                              : undefined)
+                      }
+                      fallbackImage={
+                        hoveredItemId !== null
+                          ? (equipmentList.find(item => item.id === hoveredItemId) as Armor | Weapon | null)?.imageUrl
+                          : (equippedId !== undefined
+                              ? (equipmentList.find(item => item.id === equippedId) as Armor | Weapon | null)?.imageUrl
+                              : undefined)
+                      }
+                    />
+                  </div>
                   <EquipmentItemParams
                     item={
                       hoveredItemId !== null
