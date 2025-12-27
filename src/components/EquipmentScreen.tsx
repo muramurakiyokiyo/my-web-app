@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { Character, Armor, Weapon } from '../types/character';
 import { EquipSlot, equipSlots, getEquipType, getEquipSlotDisplayName } from '../types/character';
 import { getCalculatedStats } from '../utils/characterStats';
-import { getEquipmentList, getEquippedId } from '../utils/equipment';
+import { getEquipmentList, getEquippedId, getEquipPropIDs, getEquipProperty } from '../utils/equipment';
 import { CalculatedStatsWindow } from './CalculatedStatsWindow';
 import { EquipmentDisplay } from './EquipmentDisplay';
 import styles from './EquipmentScreen.module.css';
@@ -62,8 +62,8 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
               <div className={styles.equipmentList}>
                 {equipmentList.map((item) => {
                   const isEquipped = item.id === equippedId;
-                  const isArmor = equipType === 'armor';
                   const equipmentItem = item as Armor | Weapon;
+                  const propIDs = getEquipPropIDs(equipmentItem);
                   
                   return (
                     <button
@@ -76,10 +76,13 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                         {isEquipped && <div className={styles.equipmentItemEquippedBadge}>装備中</div>}
                       </div>
                       <div className={styles.equipmentItemStat}>
-                        {isArmor 
-                          ? `防御力: +${(equipmentItem as Armor).defence}`
-                          : `攻撃力: +${(equipmentItem as Weapon).attack}`
-                        }
+                        {propIDs.map((propID) => {
+                          const property = getEquipProperty(equipmentItem, propID);
+                          if (property) {
+                            return `${property.displayName}: +${property.value}`;
+                          }
+                          return null;
+                        })}
                       </div>
                     </button>
                   );
