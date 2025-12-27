@@ -104,7 +104,7 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
                     if (onChangeEquipment) {
                       onChangeEquipment(character.id, armor.id);
                     }
-                    setShowArmorList(false);
+                    // リストは閉じない
                   }}
                 >
                   <div className={styles.armorItemId}>ID: {armor.id}</div>
@@ -121,7 +121,7 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
               setShowArmorList(false);
             }}
           >
-            キャンセル
+            戻る
           </button>
         </div>
       )}
