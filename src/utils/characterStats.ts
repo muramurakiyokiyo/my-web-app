@@ -1,6 +1,8 @@
 import type { Character, CalculatedStats } from '../types/character';
+import { equipSlots, EquipPropID } from '../types/character';
 import { armors } from '../data/armors';
 import { weapons } from '../data/weapons';
+import { getEquippedProperty } from './equipment';
 
 // Characterのstatsをequipmentから算出する関数
 export function getCalculatedStats(character: Character): CalculatedStats {
@@ -30,6 +32,15 @@ export function getCalculatedStats(character: Character): CalculatedStats {
     }
   }
   
+  // 装備品の総重量を計算（EquipSlotリストとEquipPropID.Weightを使用）
+  let totalWeight = 0;
+  for (const slot of equipSlots) {
+    const weightProperty = getEquippedProperty(character.equipment, slot, EquipPropID.Weight);
+    if (weightProperty && typeof weightProperty.value === 'number') {
+      totalWeight += weightProperty.value;
+    }
+  }
+  
   return {
     hp: baseStats.hp,
     maxHp: baseStats.maxHp,
@@ -37,6 +48,7 @@ export function getCalculatedStats(character: Character): CalculatedStats {
     maxMp: baseStats.maxMp,
     attack: baseStats.attack + additionalAttack,
     defense: baseStats.baseDefense + additionalDefense,
+    totalWeight: totalWeight,
   };
 }
 

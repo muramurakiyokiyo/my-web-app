@@ -47,6 +47,9 @@ export function getEquipPropIDs(item: Armor | Weapon): EquipPropID[] {
     propIDs.push(EquipPropIDConst.Attack);
   }
   
+  // 重量はすべての装備品に存在する
+  propIDs.push(EquipPropIDConst.Weight);
+  
   return propIDs;
 }
 
@@ -70,7 +73,20 @@ export function getEquipProperty(item: Armor | Weapon, propID: EquipPropID): Equ
       displayName: getEquipPropDisplayName(propID),
       value: (item as Weapon).attack,
     };
+  } else if (propID === EquipPropIDConst.Weight) {
+    return {
+      id: propID,
+      displayName: getEquipPropDisplayName(propID),
+      value: item.weight,
+    };
   }
   return null;
+}
+
+// EquipSlotとEquipPropIDから直接EquipPropertyを取得する関数
+export function getEquippedProperty(equipment: Equipment | undefined, slot: EquipSlot, propID: EquipPropID): EquipProperty | null {
+  const equippedItem = getEquippedItem(equipment, slot);
+  if (!equippedItem) return null;
+  return getEquipProperty(equippedItem, propID);
 }
 

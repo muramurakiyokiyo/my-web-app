@@ -47,6 +47,7 @@ export const EquipPropID = {
   Name: 'name',
   Defence: 'defence',
   Attack: 'attack',
+  Weight: 'weight',
 } as const;
 
 export type EquipPropID = typeof EquipPropID[keyof typeof EquipPropID];
@@ -66,6 +67,8 @@ export function getEquipPropDisplayName(propID: EquipPropID): string {
     return '防御力';
   } else if (propID === EquipPropID.Attack) {
     return '攻撃力';
+  } else if (propID === EquipPropID.Weight) {
+    return '重量';
   }
   return '';
 }
@@ -88,7 +91,7 @@ export function getEquipPropSection(propID: EquipPropID): 'header' | 'stat' {
 }
 
 // HPやMPなどのステータス（基本値、equipmentから算出される値は含まない）
-interface CharacterStats {
+export interface CharacterStats {
   hp: number;
   maxHp: number;
   mp: number;
@@ -105,6 +108,7 @@ export interface CalculatedStats {
   maxMp: number;
   attack: number;
   defense: number; // 基本防御力 + 装備による追加防御力
+  totalWeight: number; // 装備品の総重量
 }
 
 // Armor
@@ -112,6 +116,7 @@ export interface Armor {
   id: number;
   name: string;
   defence: number;
+  weight: number;
 }
 
 // Weapon
@@ -119,6 +124,7 @@ export interface Weapon {
   id: number;
   attack: number;
   name: string;
+  weight: number;
 }
 
 // 装備設定

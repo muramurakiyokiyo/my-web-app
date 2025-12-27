@@ -32,6 +32,10 @@ export const CalculatedStatsWindow: React.FC<CalculatedStatsWindowProps> = ({
             <span className={styles.statLabel}>防御力:</span>
             <span className={styles.statValue}>{calculatedStats.defense}</span>
           </div>
+          <div className={styles.statItem}>
+            <span className={styles.statLabel}>総重量:</span>
+            <span className={styles.statValue}>{calculatedStats.totalWeight}</span>
+          </div>
         </div>
       </div>
       <div className={styles.statsSection}>
