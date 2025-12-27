@@ -118,21 +118,17 @@ function App() {
     });
   };
 
-  const handleChangeEquipment = (id: string) => {
+  const handleChangeEquipment = (characterId: string, armorId: number) => {
     updateCharacters((draft: Character[]) => {
-      const character = draft.find((char: Character) => char.id === id);
+      const character = draft.find((char: Character) => char.id === characterId);
       if (character) {
         // 装備を初期化していない場合は初期化
         if (!character.equipment) {
           character.equipment = {};
         }
         
-        // 現在のarmor IDを取得（未装備の場合は-1として扱う）
-        const currentArmorId = character.equipment.armor ?? -1;
-        
-        // 0→1→2→0のように循環させる
-        const nextArmorId = currentArmorId === 2 ? 0 : currentArmorId + 1;
-        character.equipment.armor = nextArmorId;
+        // 選択したArmorを装備
+        character.equipment.armor = armorId;
       }
     });
   };

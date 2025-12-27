@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import type { Character } from '../types/character';
 import { getCalculatedStats } from '../utils/characterStats';
@@ -9,10 +9,11 @@ import styles from './CharacterCard.module.css';
 interface CharacterCardProps {
   character: Character;
   onSelect?: (id: string) => void;
-  onChangeEquipment?: (id: string) => void;
+  onChangeEquipment?: (characterId: string, armorId: number) => void;
 }
 
 export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelect, onChangeEquipment }) => {
+  const [showArmorList, setShowArmorList] = useState(false);
   const calculatedStats = getCalculatedStats(character);
   const borderClass = character.stats.hp < character.stats.maxHp * 0.2 
     ? styles.cardBorderDanger 
@@ -77,18 +78,53 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
       </div>
       
       {/* 装備変更ボタン */}
-      <button
-        className={styles.equipmentButton}
-        onClick={(e) => {
-          e.stopPropagation(); // カードのクリックイベントを防ぐ
-          if (onChangeEquipment) {
-            onChangeEquipment(character.id);
-          }
-        }}
-        disabled={isDead}
-      >
-        装備変更
-      </button>
+      {!showArmorList ? (
+        <button
+          className={styles.equipmentButton}
+          onClick={(e) => {
+            e.stopPropagation(); // カードのクリックイベントを防ぐ
+            setShowArmorList(true);
+          }}
+          disabled={isDead}
+        >
+          装備変更
+        </button>
+      ) : (
+        <div className={styles.armorListContainer}>
+          <div className={styles.armorListTitle}>装備を選択</div>
+          <div className={styles.armorList}>
+            {armors.map((armor) => {
+              const isEquipped = character.equipment?.armor === armor.id;
+              return (
+                <button
+                  key={armor.id}
+                  className={`${styles.armorItem} ${isEquipped ? styles.armorItemEquipped : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation(); // カードのクリックイベントを防ぐ
+                    if (onChangeEquipment) {
+                      onChangeEquipment(character.id, armor.id);
+                    }
+                    setShowArmorList(false);
+                  }}
+                >
+                  <div className={styles.armorItemId}>ID: {armor.id}</div>
+                  <div className={styles.armorItemDefence}>防御力: +{armor.defence}</div>
+                  {isEquipped && <div className={styles.armorItemEquippedBadge}>装備中</div>}
+                </button>
+              );
+            })}
+          </div>
+          <button
+            className={styles.cancelButton}
+            onClick={(e) => {
+              e.stopPropagation(); // カードのクリックイベントを防ぐ
+              setShowArmorList(false);
+            }}
+          >
+            キャンセル
+          </button>
+        </div>
+      )}
     </motion.div>
   );
 };
