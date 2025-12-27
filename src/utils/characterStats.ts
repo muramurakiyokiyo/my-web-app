@@ -1,53 +1,41 @@
-import type { Character, CalculatedStats } from '../types/character';
+import type { CharacterStats, Equipment, CalculatedStats } from '../types/character';
 import { equipSlots, EquipPropID } from '../types/character';
-import { armors } from '../data/armors';
-import { weapons } from '../data/weapons';
 import { getEquippedProperty } from './equipment';
 
-// Characterのstatsをequipmentから算出する関数
-export function getCalculatedStats(character: Character): CalculatedStats {
-  const baseStats = character.stats;
-  
-  // 装備による防御力の追加を計算
+// ステータスと装備から、最終的なステータスを算出する関数
+export function getCalculatedStats(stats: CharacterStats, equipment: Equipment | undefined): CalculatedStats {
   let additionalDefense = 0;
-  if (character.equipment?.armor !== undefined) {
-    const armor = armors.find(a => a.id === character.equipment!.armor);
-    if (armor) {
-      additionalDefense = armor.defence;
-    }
-  }
-  
-  // 装備による攻撃力の追加を計算
   let additionalAttack = 0;
-  if (character.equipment?.rightHandWeapon !== undefined) {
-    const weapon = weapons.find(w => w.id === character.equipment!.rightHandWeapon);
-    if (weapon) {
-      additionalAttack += weapon.attack;
-    }
-  }
-  if (character.equipment?.leftHandWeapon !== undefined) {
-    const weapon = weapons.find(w => w.id === character.equipment!.leftHandWeapon);
-    if (weapon) {
-      additionalAttack += weapon.attack;
-    }
-  }
-  
-  // 装備品の総重量を計算（EquipSlotリストとEquipPropID.Weightを使用）
   let totalWeight = 0;
+
+  // 全装備スロットをループして、各パラメータを加算
   for (const slot of equipSlots) {
-    const weightProperty = getEquippedProperty(character.equipment, slot, EquipPropID.Weight);
-    if (weightProperty && typeof weightProperty.value === 'number') {
-      totalWeight += weightProperty.value;
+    // 防御力の加算
+    const defProp = getEquippedProperty(equipment, slot, EquipPropID.Defence);
+    if (defProp && typeof defProp.value === 'number') {
+      additionalDefense += defProp.value;
+    }
+
+    // 攻撃力の加算
+    const atkProp = getEquippedProperty(equipment, slot, EquipPropID.Attack);
+    if (atkProp && typeof atkProp.value === 'number') {
+      additionalAttack += atkProp.value;
+    }
+
+    // 重量の加算
+    const weightProp = getEquippedProperty(equipment, slot, EquipPropID.Weight);
+    if (weightProp && typeof weightProp.value === 'number') {
+      totalWeight += weightProp.value;
     }
   }
-  
+
   return {
-    hp: baseStats.hp,
-    maxHp: baseStats.maxHp,
-    mp: baseStats.mp,
-    maxMp: baseStats.maxMp,
-    attack: baseStats.attack + additionalAttack,
-    defense: baseStats.baseDefense + additionalDefense,
+    hp: stats.hp,
+    maxHp: stats.maxHp,
+    mp: stats.mp,
+    maxMp: stats.maxMp,
+    attack: stats.attack + additionalAttack,
+    defense: stats.baseDefense + additionalDefense,
     totalWeight: totalWeight,
   };
 }

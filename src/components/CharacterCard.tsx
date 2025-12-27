@@ -13,7 +13,7 @@ interface CharacterCardProps {
 }
 
 export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelect, onOpenEquipment }) => {
-  const calculatedStats = getCalculatedStats(character);
+  const calculatedStats = getCalculatedStats(character.stats, character.equipment);
   const borderClass = character.stats.hp < character.stats.maxHp * 0.2 
     ? styles.cardBorderDanger 
     : styles.cardBorderNormal;

@@ -85,7 +85,7 @@ const initialCharacters: Character[] = [
 
 // ダメージを適用するアクション関数（防御力を考慮、equipmentから算出）
 function applyDamage(character: Character, attackPower: number): void {
-  const calculatedStats = getCalculatedStats(character);
+  const calculatedStats = getCalculatedStats(character.stats, character.equipment);
   const actualDamage = Math.max(0, attackPower - calculatedStats.defense);
   character.stats.hp = Math.max(0, character.stats.hp - actualDamage);
 }

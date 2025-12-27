@@ -19,12 +19,14 @@ interface EquipmentScreenProps {
 export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onEquip, onClose }) => {
   const [activeTab, setActiveTab] = useState<EquipmentTab>(EquipSlot.Armor);
   const [hoveredItemId, setHoveredItemId] = useState<number | null>(null);
-  const calculatedStats = getCalculatedStats(character);
   
   // アクティブなタブからEquipTypeと装備品リストを取得
   const equipType = useMemo(() => getEquipType(activeTab), [activeTab]);
   const equipmentList = useMemo(() => getEquipmentList(equipType), [equipType]);
   const equippedId = useMemo(() => getEquippedId(character.equipment, activeTab), [character.equipment, activeTab]);
+
+  const calculatedStats = getCalculatedStats(character.stats, character.equipment);
+
   return (
     <div className={styles.equipmentScreen}>
       <div className={styles.equipmentScreenContent}>
