@@ -25,6 +25,12 @@
   border-color: #ef4444; /* border-red-500 */
 }
 
+.cardDead {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  cursor: not-allowed;
+}
+
 .avatarSection {
   display: flex;
   align-items: center;

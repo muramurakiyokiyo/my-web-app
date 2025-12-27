@@ -12,10 +12,11 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
   const borderClass = character.stats.hp < character.stats.maxHp * 0.2 
     ? styles.cardBorderDanger 
     : styles.cardBorderNormal;
+  const isDead = character.stats.hp <= 0;
 
   return (
     <div 
-      className={`${styles.card} ${borderClass}`}
+      className={`${styles.card} ${borderClass} ${isDead ? styles.cardDead : ''}`}
       onClick={() => onSelect && onSelect(character.id)}
     >
       {/* アバター部分 */}
