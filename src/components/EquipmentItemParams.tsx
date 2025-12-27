@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Armor, Weapon } from '../types/character';
-import { EquipPropID, getEquipPropSection } from '../types/character';
+import { EquipPropID, getEquipPropSection, getEquipPropComparisonType, EquipPropComparisonType } from '../types/character';
 import { getEquipPropIDs, getEquipProperty } from '../utils/equipment';
 import styles from './EquipmentItemParams.module.css';
 
@@ -32,17 +32,23 @@ export const EquipmentItemParams: React.FC<EquipmentItemParamsProps> = ({ item, 
     }
 
     const equippedValue = equippedProperty.value;
-    const isWeight = propID === EquipPropID.Weight;
+    const comparisonType = getEquipPropComparisonType(propID);
     
-    // 重量の場合は判定を逆にする（値が小さい方が高性能）
-    if (isWeight) {
+    // 優劣判定なしの場合は色分けしない
+    if (comparisonType === EquipPropComparisonType.None) {
+      return styles.paramValue;
+    }
+    
+    // 優劣判定タイプに基づいて色を決定
+    if (comparisonType === EquipPropComparisonType.Lower) {
+      // 値が小さい方が高性能
       if (currentValue < equippedValue) {
-        return `${styles.paramValue} ${styles.paramValueHigher}`; // 軽い = 良い = 青
+        return `${styles.paramValue} ${styles.paramValueHigher}`; // 小さい = 良い = 青
       } else if (currentValue > equippedValue) {
-        return `${styles.paramValue} ${styles.paramValueLower}`; // 重い = 悪い = 赤
+        return `${styles.paramValue} ${styles.paramValueLower}`; // 大きい = 悪い = 赤
       }
     } else {
-      // その他のパラメータは通常の判定（値が大きい方が高性能）
+      // 値が大きい方が高性能
       if (currentValue > equippedValue) {
         return `${styles.paramValue} ${styles.paramValueHigher}`; // 大きい = 良い = 青
       } else if (currentValue < equippedValue) {
@@ -54,7 +60,7 @@ export const EquipmentItemParams: React.FC<EquipmentItemParamsProps> = ({ item, 
 
   return (
     <div className={styles.paramsContainer}>
-      <h4 className={styles.paramsTitle}>パラメータ</h4>
+      <h4 className={styles.paramsTitle}>{item.name}</h4>
       <div className={styles.paramsList}>
         {propIDs
           .filter(propID => getEquipPropSection(propID) === 'stat')

@@ -52,6 +52,26 @@ export const EquipPropID = {
 
 export type EquipPropID = typeof EquipPropID[keyof typeof EquipPropID];
 
+// パラメータの優劣判定タイプ
+export const EquipPropComparisonType = {
+  Higher: 'higher', // 値が大きい方が高性能
+  Lower: 'lower',   // 値が小さい方が高性能
+  None: 'none',     // 優劣判定なし
+} as const;
+
+export type EquipPropComparisonType = typeof EquipPropComparisonType[keyof typeof EquipPropComparisonType];
+
+// EquipPropIDから優劣判定タイプを取得する関数
+export function getEquipPropComparisonType(propID: EquipPropID): EquipPropComparisonType {
+  if (propID === EquipPropID.Name) {
+    return EquipPropComparisonType.None; // 名前は優劣判定なし
+  } else if (propID === EquipPropID.Weight) {
+    return EquipPropComparisonType.Lower; // 重量は値が小さい方が高性能
+  }
+  // その他のパラメータ（防御力、攻撃力など）は値が大きい方が高性能
+  return EquipPropComparisonType.Higher;
+}
+
 // 装備品のパラメータ（表示名と値）
 export interface EquipProperty {
   id: EquipPropID;
