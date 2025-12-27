@@ -5,6 +5,7 @@ import { getCalculatedStats } from '../utils/characterStats';
 import { getEquipmentList, getEquippedId, getEquipPropIDs, getEquipProperty } from '../utils/equipment';
 import { CalculatedStatsWindow } from './CalculatedStatsWindow';
 import { EquipmentDisplay } from './EquipmentDisplay';
+import { EquipmentItemParams } from './EquipmentItemParams';
 import styles from './EquipmentScreen.module.css';
 
 type EquipmentTab = EquipSlot;
@@ -17,6 +18,7 @@ interface EquipmentScreenProps {
 
 export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onEquip, onClose }) => {
   const [activeTab, setActiveTab] = useState<EquipmentTab>(EquipSlot.Armor);
+  const [hoveredItemId, setHoveredItemId] = useState<number | null>(null);
   const calculatedStats = getCalculatedStats(character);
   
   // アクティブなタブからEquipTypeと装備品リストを取得
@@ -59,18 +61,21 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
 
             {/* タブコンテンツ */}
             <div className={styles.tabContent}>
-              <div className={styles.equipmentList}>
-                {equipmentList.map((item) => {
-                  const isEquipped = item.id === equippedId;
-                  const equipmentItem = item as Armor | Weapon;
-                  const propIDs = getEquipPropIDs(equipmentItem);
-                  
-                  return (
-                    <button
-                      key={item.id}
-                      className={`${styles.equipmentItem} ${isEquipped ? styles.equipmentItemEquipped : ''}`}
-                      onClick={() => onEquip(activeTab, item.id)}
-                    >
+              <div className={styles.equipmentListContainer}>
+                <div className={styles.equipmentList}>
+                  {equipmentList.map((item) => {
+                    const isEquipped = item.id === equippedId;
+                    const equipmentItem = item as Armor | Weapon;
+                    const propIDs = getEquipPropIDs(equipmentItem);
+                    
+                    return (
+                      <button
+                        key={item.id}
+                        className={`${styles.equipmentItem} ${isEquipped ? styles.equipmentItemEquipped : ''}`}
+                        onClick={() => onEquip(activeTab, item.id)}
+                        onMouseEnter={() => setHoveredItemId(item.id)}
+                        onMouseLeave={() => setHoveredItemId(null)}
+                      >
                       <div className={styles.equipmentItemHeader}>
                         {propIDs
                           .filter(propID => getEquipPropSection(propID) === 'header')
@@ -107,6 +112,16 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                     </button>
                   );
                 })}
+                </div>
+                <div className={styles.paramsDisplay}>
+                  <EquipmentItemParams
+                    item={
+                      hoveredItemId !== null
+                        ? (equipmentList.find(item => item.id === hoveredItemId) as Armor | Weapon | null)
+                        : null
+                    }
+                  />
+                </div>
               </div>
             </div>
           </div>
