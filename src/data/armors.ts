@@ -7,18 +7,20 @@ export const armors: Armor[] = [
     name: '革の防具',
     defence: 5,
     weight: 3,
+    imageUrl: 'https://img.icons8.com/color/96/shield.png',
   },
   {
     id: 1,
     name: '鉄の防具',
     defence: 10,
     weight: 8,
+    imageUrl: 'https://img.icons8.com/color/96/shield.png',
   },
   {
     id: 2,
     name: '鋼の防具',
     defence: 15,
     weight: 15,
+    imageUrl: 'https://img.icons8.com/color/96/shield.png',
   },
 ];
-

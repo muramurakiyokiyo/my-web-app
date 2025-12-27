@@ -195,6 +195,7 @@ export interface Armor {
   name: string;
   defence: number;
   weight: number;
+  imageUrl?: string; // 装備品の画像URL
 }
 
 // Weapon
@@ -203,6 +204,7 @@ export interface Weapon {
   attack: number;
   name: string;
   weight: number;
+  imageUrl?: string; // 装備品の画像URL
 }
 
 // 装備設定

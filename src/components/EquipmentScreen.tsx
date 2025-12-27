@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import type { Character, Armor, Weapon } from '../types/character';
-import { EquipSlot, equipSlots, getEquipType, getEquipSlotDisplayName, getEquipPropSpec } from '../types/character';
+import { EquipSlot, equipSlots, getEquipType, getEquipSlotDisplayName } from '../types/character';
 import { getCalculatedStats } from '../utils/characterStats';
-import { getEquipmentList, getEquippedId, getEquipPropIDs, getEquipProperty, getEquippedItem } from '../utils/equipment';
+import { getEquipmentList, getEquippedId, getEquippedItem } from '../utils/equipment';
 import { CalculatedStatsWindow } from './CalculatedStatsWindow';
 import { EquipmentDisplay } from './EquipmentDisplay';
 import { EquipmentItemParams } from './EquipmentItemParams';
@@ -84,8 +84,6 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                 <div className={styles.equipmentList}>
                   {equipmentList.map((item) => {
                     const isEquipped = item.id === equippedId;
-                    const equipmentItem = item as Armor | Weapon;
-                    const propIDs = getEquipPropIDs(equipmentItem);
                     
                     return (
                       <button
@@ -94,41 +92,20 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                         onClick={() => onEquip(activeTab, item.id)}
                         onMouseEnter={() => setHoveredItemId(item.id)}
                         onMouseLeave={() => setHoveredItemId(null)}
+                        title={item.name}
                       >
-                      <div className={styles.equipmentItemHeader}>
-                        {propIDs
-                          .filter(propID => getEquipPropSpec(propID).section === 'header')
-                          .map((propID) => {
-                            const property = getEquipProperty(equipmentItem, propID);
-                            if (!property) return null;
-                            
-                            const className = property.spec.className ? styles[property.spec.className as keyof typeof styles] : '';
-                            
-                            return (
-                              <div key={propID} className={className}>{property.value}</div>
-                            );
-                          })}
-                        {isEquipped && <div className={styles.equipmentItemEquippedBadge}>装備中</div>}
-                      </div>
-                      <div className={styles.equipmentItemStat}>
-                        {propIDs
-                          .filter(propID => getEquipPropSpec(propID).section === 'stat')
-                          .map((propID) => {
-                            const property = getEquipProperty(equipmentItem, propID);
-                            if (!property) return null;
-                            
-                            const className = property.spec.className ? styles[property.spec.className as keyof typeof styles] : '';
-                            
-                                    return (
-                                      <div key={propID} className={className}>
-                                        {property.spec.displayName}: {property.value}
-                                      </div>
-                                    );
-                          })}
-                      </div>
-                    </button>
-                  );
-                })}
+                        <div className={styles.equipmentItemThumbnail}>
+                          {item.imageUrl ? (
+                            <img src={item.imageUrl} alt={item.name} className={styles.thumbnailImage} />
+                          ) : (
+                            <div className={styles.thumbnailPlaceholder} />
+                          )}
+                        </div>
+                        <div className={styles.equipmentItemId}>ID: {item.id}</div>
+                        {isEquipped && <div className={styles.equipmentItemEquippedBadge}>E</div>}
+                      </button>
+                    );
+                  })}
                 </div>
                 <div className={styles.paramsDisplay}>
                   <EquipmentItemParams
