@@ -44,13 +44,31 @@ export const GamePropertyDisplay: React.FC<GamePropertyDisplayProps> = ({ proper
   };
 
   const valueColorClass = getValueColorClass();
-  const displayValue = typeof property.value === 'number' ? `+${property.value}` : property.value;
+  const displayValue = property.value;
+
+  // 比較プロパティがある場合の表示値
+  const compareDisplayValue = compareProperty ? compareProperty.value : null;
+
+  // 値が同じかどうかを判定
+  const isSameValue = compareProperty && (
+    typeof property.value === 'number' && typeof compareProperty.value === 'number'
+      ? property.value === compareProperty.value
+      : property.value === compareProperty.value
+  );
 
   return (
     <div className={styles.propertyItem}>
       <span className={styles.propertyLabel}>{property.spec.displayName}:</span>
       <span className={valueColorClass}>
-        {displayValue}
+        {compareProperty && !isSameValue ? (
+          <>
+            <span className={styles.propertyValueBefore}>{compareDisplayValue}</span>
+            <span className={styles.propertyValueArrow}> → </span>
+            <span>{displayValue}</span>
+          </>
+        ) : (
+          <span>{displayValue}</span>
+        )}
       </span>
     </div>
   );

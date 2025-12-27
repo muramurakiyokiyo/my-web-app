@@ -23,7 +23,7 @@ export const EquipmentDisplay: React.FC<EquipmentDisplayProps> = ({ character })
             <div className={styles.equipmentLabel}>{getEquipSlotDisplayName(slot)}:</div>
             <div className={styles.equipmentValue}>
               {equippedItem
-                ? `${equippedItem.name} (+${isArmor ? (equippedItem as Armor).defence : (equippedItem as Weapon).attack})`
+                ? `${equippedItem.name} (${isArmor ? (equippedItem as Armor).defence : (equippedItem as Weapon).attack})`
                 : '未装備'}
             </div>
           </div>

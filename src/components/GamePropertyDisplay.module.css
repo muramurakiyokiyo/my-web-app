@@ -22,3 +22,12 @@
   color: #ef4444; /* text-red-500 */
 }
 
+.propertyValueBefore {
+  color: #9ca3af; /* text-gray-400 */
+}
+
+.propertyValueArrow {
+  color: #9ca3af; /* text-gray-400 */
+  margin: 0 0.25rem;
+}
+

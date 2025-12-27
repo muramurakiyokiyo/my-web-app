@@ -100,11 +100,11 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                             
                             const className = property.spec.className ? styles[property.spec.className as keyof typeof styles] : '';
                             
-                            return (
-                              <div key={propID} className={className}>
-                                {property.spec.displayName}: +{property.value}
-                              </div>
-                            );
+                                    return (
+                                      <div key={propID} className={className}>
+                                        {property.spec.displayName}: {property.value}
+                                      </div>
+                                    );
                           })}
                       </div>
                     </button>
