@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import type { Character } from '../types/character';
+import { getCalculatedStats } from '../utils/characterStats';
+import { armors } from '../data/armors';
 import { HPBar } from './HPBar';
 import styles from './CharacterCard.module.css';
 
@@ -10,10 +12,20 @@ interface CharacterCardProps {
 }
 
 export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelect }) => {
+  const calculatedStats = getCalculatedStats(character);
   const borderClass = character.stats.hp < character.stats.maxHp * 0.2 
     ? styles.cardBorderDanger 
     : styles.cardBorderNormal;
   const isDead = character.stats.hp <= 0;
+  
+  // 防御力の表示用（baseDefense + armor.defence）
+  const baseDefense = character.stats.baseDefense;
+  const armorDefense = character.equipment?.armor !== undefined
+    ? armors.find(a => a.id === character.equipment!.armor)?.defence || 0
+    : 0;
+  const defenseDisplay = armorDefense > 0 
+    ? `${baseDefense}+${armorDefense}` 
+    : `${baseDefense}`;
 
   return (
     <motion.div 
@@ -56,8 +68,11 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
 
       {/* その他のステータス */}
       <div className={styles.otherStats}>
-        <div>攻撃力: <span className={styles.statValue}>{character.stats.attack}</span></div>
-        <div>防御力: <span className={styles.statValue}>{character.stats.defense}</span></div>
+        <div>攻撃力: <span className={styles.statValue}>{calculatedStats.attack}</span></div>
+        <div>防御力: <span className={styles.statValue}>{defenseDisplay}</span></div>
+        {character.equipment?.armor !== undefined && (
+          <div>Armor ID: <span className={styles.statValue}>{character.equipment.armor}</span></div>
+        )}
       </div>
     </motion.div>
   );
