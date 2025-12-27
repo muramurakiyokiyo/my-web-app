@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import type { Character } from '../types/character';
-import { EquipSlot } from '../types/character';
-import { armors } from '../data/armors';
-import { weapons } from '../data/weapons';
+import React, { useState, useMemo } from 'react';
+import type { Character, Armor, Weapon } from '../types/character';
+import { EquipSlot, getEquipType } from '../types/character';
 import { getCalculatedStats } from '../utils/characterStats';
+import { getEquipmentList, getEquippedId } from '../utils/equipment';
 import { CalculatedStatsWindow } from './CalculatedStatsWindow';
 import { EquipmentDisplay } from './EquipmentDisplay';
 import styles from './EquipmentScreen.module.css';
@@ -19,6 +18,11 @@ interface EquipmentScreenProps {
 export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onEquip, onClose }) => {
   const [activeTab, setActiveTab] = useState<EquipmentTab>(EquipSlot.Armor);
   const calculatedStats = getCalculatedStats(character);
+  
+  // アクティブなタブからEquipTypeと装備品リストを取得
+  const equipType = useMemo(() => getEquipType(activeTab), [activeTab]);
+  const equipmentList = useMemo(() => getEquipmentList(equipType), [equipType]);
+  const equippedId = useMemo(() => getEquippedId(character.equipment, activeTab), [character.equipment, activeTab]);
   return (
     <div className={styles.equipmentScreen}>
       <div className={styles.equipmentScreenContent}>
@@ -64,68 +68,32 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
 
             {/* タブコンテンツ */}
             <div className={styles.tabContent}>
-              {activeTab === EquipSlot.Armor && (
-                <div className={styles.equipmentList}>
-                  {armors.map((armor) => {
-                    const isEquipped = character.equipment?.armor === armor.id;
-                    return (
-                      <button
-                        key={armor.id}
-                        className={`${styles.equipmentItem} ${isEquipped ? styles.equipmentItemEquipped : ''}`}
-                        onClick={() => onEquip(EquipSlot.Armor, armor.id)}
-                      >
-                        <div className={styles.equipmentItemHeader}>
-                          <div className={styles.equipmentItemName}>{armor.name}</div>
-                          {isEquipped && <div className={styles.equipmentItemEquippedBadge}>装備中</div>}
-                        </div>
-                        <div className={styles.equipmentItemStat}>防御力: +{armor.defence}</div>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
-              {activeTab === EquipSlot.RightHandWeapon && (
-                <div className={styles.equipmentList}>
-                  {weapons.map((weapon) => {
-                    const isEquipped = character.equipment?.rightHandWeapon === weapon.id;
-                    return (
-                      <button
-                        key={weapon.id}
-                        className={`${styles.equipmentItem} ${isEquipped ? styles.equipmentItemEquipped : ''}`}
-                        onClick={() => onEquip(EquipSlot.RightHandWeapon, weapon.id)}
-                      >
-                        <div className={styles.equipmentItemHeader}>
-                          <div className={styles.equipmentItemName}>{weapon.name}</div>
-                          {isEquipped && <div className={styles.equipmentItemEquippedBadge}>装備中</div>}
-                        </div>
-                        <div className={styles.equipmentItemStat}>攻撃力: +{weapon.attack}</div>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
-              {activeTab === EquipSlot.LeftHandWeapon && (
-                <div className={styles.equipmentList}>
-                  {weapons.map((weapon) => {
-                    const isEquipped = character.equipment?.leftHandWeapon === weapon.id;
-                    return (
-                      <button
-                        key={weapon.id}
-                        className={`${styles.equipmentItem} ${isEquipped ? styles.equipmentItemEquipped : ''}`}
-                        onClick={() => onEquip(EquipSlot.LeftHandWeapon, weapon.id)}
-                      >
-                        <div className={styles.equipmentItemHeader}>
-                          <div className={styles.equipmentItemName}>{weapon.name}</div>
-                          {isEquipped && <div className={styles.equipmentItemEquippedBadge}>装備中</div>}
-                        </div>
-                        <div className={styles.equipmentItemStat}>攻撃力: +{weapon.attack}</div>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+              <div className={styles.equipmentList}>
+                {equipmentList.map((item) => {
+                  const isEquipped = item.id === equippedId;
+                  const isArmor = equipType === 'armor';
+                  const equipmentItem = item as Armor | Weapon;
+                  
+                  return (
+                    <button
+                      key={item.id}
+                      className={`${styles.equipmentItem} ${isEquipped ? styles.equipmentItemEquipped : ''}`}
+                      onClick={() => onEquip(activeTab, item.id)}
+                    >
+                      <div className={styles.equipmentItemHeader}>
+                        <div className={styles.equipmentItemName}>{equipmentItem.name}</div>
+                        {isEquipped && <div className={styles.equipmentItemEquippedBadge}>装備中</div>}
+                      </div>
+                      <div className={styles.equipmentItemStat}>
+                        {isArmor 
+                          ? `防御力: +${(equipmentItem as Armor).defence}`
+                          : `攻撃力: +${(equipmentItem as Weapon).attack}`
+                        }
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 

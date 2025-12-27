@@ -1,3 +1,11 @@
+// 装備品の種類
+export const EquipType = {
+  Weapon: 'weapon',
+  Armor: 'armor',
+} as const;
+
+export type EquipType = typeof EquipType[keyof typeof EquipType];
+
 // 装備箇所
 export const EquipSlot = {
   Armor: 'armor',
@@ -6,6 +14,14 @@ export const EquipSlot = {
 } as const;
 
 export type EquipSlot = typeof EquipSlot[keyof typeof EquipSlot];
+
+// EquipSlotからEquipTypeを取得する関数
+export function getEquipType(slot: EquipSlot): EquipType {
+  if (slot === EquipSlot.Armor) {
+    return EquipType.Armor;
+  }
+  return EquipType.Weapon;
+}
 
 // HPやMPなどのステータス（基本値、equipmentから算出される値は含まない）
 interface CharacterStats {
