@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useImmer } from 'use-immer';
 import { CharacterCard } from './components/CharacterCard';
 import type { Character } from './types/character';
 import './index.css';
@@ -69,26 +70,19 @@ const initialCharacters: Character[] = [
 ];
 
 function App() {
-  const [characters, setCharacters] = useState<Character[]>(initialCharacters);
+  const [characters, updateCharacters] = useImmer<Character[]>(initialCharacters);
   const [selectedCharId, setSelectedCharId] = useState<string | null>(null);
 
   const handleSelectCharacter = (id: string) => {
     setSelectedCharId(id);
     
-    // HPを10減らす
-    setCharacters(prevCharacters =>
-      prevCharacters.map(char =>
-        char.id === id
-          ? {
-              ...char,
-              stats: {
-                ...char.stats,
-                hp: Math.max(0, char.stats.hp - 10), // HPが0未満にならないように制限
-              },
-            }
-          : char
-      )
-    );
+    // HPを20減らす（Immerを使うことで、ミュータブルな書き方でイミュータブルな更新が可能）
+    updateCharacters((draft: Character[]) => {
+      const character = draft.find((char: Character) => char.id === id);
+      if (character) {
+        character.stats.hp = Math.max(0, character.stats.hp - 20);
+      }
+    });
   };
 
   return (
