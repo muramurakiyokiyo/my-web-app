@@ -69,6 +69,11 @@ const initialCharacters: Character[] = [
   },
 ];
 
+// ダメージを適用するアクション関数
+function applyDamage(character: Character, attackPower: number): void {
+  character.stats.hp = Math.max(0, character.stats.hp - attackPower);
+}
+
 function App() {
   const [characters, updateCharacters] = useImmer<Character[]>(initialCharacters);
   const [selectedCharId, setSelectedCharId] = useState<string | null>(null);
@@ -76,11 +81,11 @@ function App() {
   const handleSelectCharacter = (id: string) => {
     setSelectedCharId(id);
     
-    // HPを20減らす（Immerを使うことで、ミュータブルな書き方でイミュータブルな更新が可能）
+    // ダメージを適用する処理
     updateCharacters((draft: Character[]) => {
       const character = draft.find((char: Character) => char.id === id);
       if (character) {
-        character.stats.hp = Math.max(0, character.stats.hp - 20);
+        applyDamage(character, 25);
       }
     });
   };
