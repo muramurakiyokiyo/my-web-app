@@ -15,12 +15,31 @@ export const EquipSlot = {
 
 export type EquipSlot = typeof EquipSlot[keyof typeof EquipSlot];
 
+// すべてのEquipSlotのリスト
+export const equipSlots: EquipSlot[] = [
+  EquipSlot.Armor,
+  EquipSlot.RightHandWeapon,
+  EquipSlot.LeftHandWeapon,
+];
+
 // EquipSlotからEquipTypeを取得する関数
 export function getEquipType(slot: EquipSlot): EquipType {
   if (slot === EquipSlot.Armor) {
     return EquipType.Armor;
   }
   return EquipType.Weapon;
+}
+
+// EquipSlotから表示名を取得する関数
+export function getEquipSlotDisplayName(slot: EquipSlot): string {
+  if (slot === EquipSlot.Armor) {
+    return '防具';
+  } else if (slot === EquipSlot.RightHandWeapon) {
+    return '右手武器';
+  } else if (slot === EquipSlot.LeftHandWeapon) {
+    return '左手武器';
+  }
+  return '';
 }
 
 // HPやMPなどのステータス（基本値、equipmentから算出される値は含まない）

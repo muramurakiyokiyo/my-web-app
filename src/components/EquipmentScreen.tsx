@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import type { Character, Armor, Weapon } from '../types/character';
-import { EquipSlot, getEquipType } from '../types/character';
+import { EquipSlot, equipSlots, getEquipType, getEquipSlotDisplayName } from '../types/character';
 import { getCalculatedStats } from '../utils/characterStats';
 import { getEquipmentList, getEquippedId } from '../utils/equipment';
 import { CalculatedStatsWindow } from './CalculatedStatsWindow';
@@ -46,24 +46,15 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
           <div className={styles.equipmentListSection}>
             {/* タブ */}
             <div className={styles.tabContainer}>
-              <button
-                className={`${styles.tab} ${activeTab === EquipSlot.Armor ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab(EquipSlot.Armor)}
-              >
-                防具
-              </button>
-              <button
-                className={`${styles.tab} ${activeTab === EquipSlot.RightHandWeapon ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab(EquipSlot.RightHandWeapon)}
-              >
-                右手武器
-              </button>
-              <button
-                className={`${styles.tab} ${activeTab === EquipSlot.LeftHandWeapon ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab(EquipSlot.LeftHandWeapon)}
-              >
-                左手武器
-              </button>
+              {equipSlots.map((slot) => (
+                <button
+                  key={slot}
+                  className={`${styles.tab} ${activeTab === slot ? styles.tabActive : ''}`}
+                  onClick={() => setActiveTab(slot)}
+                >
+                  {getEquipSlotDisplayName(slot)}
+                </button>
+              ))}
             </div>
 
             {/* タブコンテンツ */}

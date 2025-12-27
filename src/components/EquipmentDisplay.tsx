@@ -1,7 +1,7 @@
 import React from 'react';
-import type { Character } from '../types/character';
-import { armors } from '../data/armors';
-import { weapons } from '../data/weapons';
+import type { Character, Armor, Weapon } from '../types/character';
+import { equipSlots, getEquipSlotDisplayName, getEquipType } from '../types/character';
+import { getEquippedItem } from '../utils/equipment';
 import styles from './EquipmentDisplay.module.css';
 
 interface EquipmentDisplayProps {
@@ -10,40 +10,25 @@ interface EquipmentDisplayProps {
 
 export const EquipmentDisplay: React.FC<EquipmentDisplayProps> = ({ character }) => {
   const equipment = character.equipment;
-  
-  // 装備情報を取得
-  const equippedArmor = equipment?.armor !== undefined
-    ? armors.find(a => a.id === equipment.armor)
-    : null;
-  
-  const equippedRightHandWeapon = equipment?.rightHandWeapon !== undefined
-    ? weapons.find(w => w.id === equipment.rightHandWeapon)
-    : null;
-  
-  const equippedLeftHandWeapon = equipment?.leftHandWeapon !== undefined
-    ? weapons.find(w => w.id === equipment.leftHandWeapon)
-    : null;
 
   return (
     <div className={styles.equipmentDisplay}>
-      <div className={styles.equipmentSection}>
-        <div className={styles.equipmentLabel}>防具:</div>
-        <div className={styles.equipmentValue}>
-          {equippedArmor ? `${equippedArmor.name} (+${equippedArmor.defence})` : '未装備'}
-        </div>
-      </div>
-      <div className={styles.equipmentSection}>
-        <div className={styles.equipmentLabel}>右手武器:</div>
-        <div className={styles.equipmentValue}>
-          {equippedRightHandWeapon ? `${equippedRightHandWeapon.name} (+${equippedRightHandWeapon.attack})` : '未装備'}
-        </div>
-      </div>
-      <div className={styles.equipmentSection}>
-        <div className={styles.equipmentLabel}>左手武器:</div>
-        <div className={styles.equipmentValue}>
-          {equippedLeftHandWeapon ? `${equippedLeftHandWeapon.name} (+${equippedLeftHandWeapon.attack})` : '未装備'}
-        </div>
-      </div>
+      {equipSlots.map((slot) => {
+        const equippedItem = getEquippedItem(equipment, slot);
+        const equipType = getEquipType(slot);
+        const isArmor = equipType === 'armor';
+        
+        return (
+          <div key={slot} className={styles.equipmentSection}>
+            <div className={styles.equipmentLabel}>{getEquipSlotDisplayName(slot)}:</div>
+            <div className={styles.equipmentValue}>
+              {equippedItem
+                ? `${equippedItem.name} (+${isArmor ? (equippedItem as Armor).defence : (equippedItem as Weapon).attack})`
+                : '未装備'}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };

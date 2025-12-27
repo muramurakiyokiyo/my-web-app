@@ -24,3 +24,15 @@ export function getEquippedId(equipment: Equipment | undefined, slot: EquipSlot)
   return undefined;
 }
 
+// EquipSlotから装備されているアイテムを取得する関数
+export function getEquippedItem(equipment: Equipment | undefined, slot: EquipSlot): Armor | Weapon | null {
+  const equippedId = getEquippedId(equipment, slot);
+  if (equippedId === undefined) return null;
+  
+  if (slot === 'armor') {
+    return armors.find(a => a.id === equippedId) || null;
+  } else {
+    return weapons.find(w => w.id === equippedId) || null;
+  }
+}
+
