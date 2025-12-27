@@ -70,9 +70,10 @@ const initialCharacters: Character[] = [
   },
 ];
 
-// ダメージを適用するアクション関数
+// ダメージを適用するアクション関数（防御力を考慮）
 function applyDamage(character: Character, attackPower: number): void {
-  character.stats.hp = Math.max(0, character.stats.hp - attackPower);
+  const actualDamage = Math.max(0, attackPower - character.stats.defense);
+  character.stats.hp = Math.max(0, character.stats.hp - actualDamage);
 }
 
 function App() {
