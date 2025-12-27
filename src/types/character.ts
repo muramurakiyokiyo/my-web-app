@@ -1,3 +1,12 @@
+// 装備箇所
+export const EquipSlot = {
+  Armor: 'armor',
+  RightHandWeapon: 'rightHandWeapon',
+  LeftHandWeapon: 'leftHandWeapon',
+} as const;
+
+export type EquipSlot = typeof EquipSlot[keyof typeof EquipSlot];
+
 // HPやMPなどのステータス（基本値、equipmentから算出される値は含まない）
 interface CharacterStats {
   hp: number;

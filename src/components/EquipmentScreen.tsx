@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { Character } from '../types/character';
+import { EquipSlot } from '../types/character';
 import { armors } from '../data/armors';
 import { weapons } from '../data/weapons';
 import { getCalculatedStats } from '../utils/characterStats';
@@ -7,16 +8,16 @@ import { CalculatedStatsWindow } from './CalculatedStatsWindow';
 import { EquipmentDisplay } from './EquipmentDisplay';
 import styles from './EquipmentScreen.module.css';
 
-type EquipmentTab = 'armor' | 'rightHandWeapon' | 'leftHandWeapon';
+type EquipmentTab = EquipSlot;
 
 interface EquipmentScreenProps {
   character: Character;
-  onEquip: (type: 'armor' | 'rightHandWeapon' | 'leftHandWeapon', id: number) => void;
+  onEquip: (type: EquipSlot, id: number) => void;
   onClose: () => void;
 }
 
 export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onEquip, onClose }) => {
-  const [activeTab, setActiveTab] = useState<EquipmentTab>('armor');
+  const [activeTab, setActiveTab] = useState<EquipmentTab>(EquipSlot.Armor);
   const calculatedStats = getCalculatedStats(character);
   return (
     <div className={styles.equipmentScreen}>
@@ -42,20 +43,20 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
             {/* タブ */}
             <div className={styles.tabContainer}>
               <button
-                className={`${styles.tab} ${activeTab === 'armor' ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab('armor')}
+                className={`${styles.tab} ${activeTab === EquipSlot.Armor ? styles.tabActive : ''}`}
+                onClick={() => setActiveTab(EquipSlot.Armor)}
               >
                 防具
               </button>
               <button
-                className={`${styles.tab} ${activeTab === 'rightHandWeapon' ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab('rightHandWeapon')}
+                className={`${styles.tab} ${activeTab === EquipSlot.RightHandWeapon ? styles.tabActive : ''}`}
+                onClick={() => setActiveTab(EquipSlot.RightHandWeapon)}
               >
                 右手武器
               </button>
               <button
-                className={`${styles.tab} ${activeTab === 'leftHandWeapon' ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab('leftHandWeapon')}
+                className={`${styles.tab} ${activeTab === EquipSlot.LeftHandWeapon ? styles.tabActive : ''}`}
+                onClick={() => setActiveTab(EquipSlot.LeftHandWeapon)}
               >
                 左手武器
               </button>
@@ -63,7 +64,7 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
 
             {/* タブコンテンツ */}
             <div className={styles.tabContent}>
-              {activeTab === 'armor' && (
+              {activeTab === EquipSlot.Armor && (
                 <div className={styles.equipmentList}>
                   {armors.map((armor) => {
                     const isEquipped = character.equipment?.armor === armor.id;
@@ -71,7 +72,7 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                       <button
                         key={armor.id}
                         className={`${styles.equipmentItem} ${isEquipped ? styles.equipmentItemEquipped : ''}`}
-                        onClick={() => onEquip('armor', armor.id)}
+                        onClick={() => onEquip(EquipSlot.Armor, armor.id)}
                       >
                         <div className={styles.equipmentItemHeader}>
                           <div className={styles.equipmentItemName}>{armor.name}</div>
@@ -84,7 +85,7 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                 </div>
               )}
 
-              {activeTab === 'rightHandWeapon' && (
+              {activeTab === EquipSlot.RightHandWeapon && (
                 <div className={styles.equipmentList}>
                   {weapons.map((weapon) => {
                     const isEquipped = character.equipment?.rightHandWeapon === weapon.id;
@@ -92,7 +93,7 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                       <button
                         key={weapon.id}
                         className={`${styles.equipmentItem} ${isEquipped ? styles.equipmentItemEquipped : ''}`}
-                        onClick={() => onEquip('rightHandWeapon', weapon.id)}
+                        onClick={() => onEquip(EquipSlot.RightHandWeapon, weapon.id)}
                       >
                         <div className={styles.equipmentItemHeader}>
                           <div className={styles.equipmentItemName}>{weapon.name}</div>
@@ -105,7 +106,7 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                 </div>
               )}
 
-              {activeTab === 'leftHandWeapon' && (
+              {activeTab === EquipSlot.LeftHandWeapon && (
                 <div className={styles.equipmentList}>
                   {weapons.map((weapon) => {
                     const isEquipped = character.equipment?.leftHandWeapon === weapon.id;
@@ -113,7 +114,7 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                       <button
                         key={weapon.id}
                         className={`${styles.equipmentItem} ${isEquipped ? styles.equipmentItemEquipped : ''}`}
-                        onClick={() => onEquip('leftHandWeapon', weapon.id)}
+                        onClick={() => onEquip(EquipSlot.LeftHandWeapon, weapon.id)}
                       >
                         <div className={styles.equipmentItemHeader}>
                           <div className={styles.equipmentItemName}>{weapon.name}</div>

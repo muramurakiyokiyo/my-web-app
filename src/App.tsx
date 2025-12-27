@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import { CharacterCard } from './components/CharacterCard';
 import { EquipmentScreen } from './components/EquipmentScreen';
 import type { Character } from './types/character';
+import { EquipSlot } from './types/character';
 import { getCalculatedStats } from './utils/characterStats';
 import './index.css';
 import styles from './App.module.css';
@@ -128,7 +129,7 @@ function App() {
     setEquipmentCharacterId(null);
   };
 
-  const handleEquip = (type: 'armor' | 'rightHandWeapon' | 'leftHandWeapon', id: number) => {
+  const handleEquip = (type: EquipSlot, id: number) => {
     if (!equipmentCharacterId) return;
     
     updateCharacters((draft: Character[]) => {
@@ -140,11 +141,11 @@ function App() {
         }
         
         // 選択した装備を設定
-        if (type === 'armor') {
+        if (type === EquipSlot.Armor) {
           character.equipment.armor = id;
-        } else if (type === 'rightHandWeapon') {
+        } else if (type === EquipSlot.RightHandWeapon) {
           character.equipment.rightHandWeapon = id;
-        } else if (type === 'leftHandWeapon') {
+        } else if (type === EquipSlot.LeftHandWeapon) {
           character.equipment.leftHandWeapon = id;
         }
       }
