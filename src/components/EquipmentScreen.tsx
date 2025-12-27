@@ -118,7 +118,9 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                     item={
                       hoveredItemId !== null
                         ? (equipmentList.find(item => item.id === hoveredItemId) as Armor | Weapon | null)
-                        : null
+                        : (equippedId !== undefined
+                            ? (equipmentList.find(item => item.id === equippedId) as Armor | Weapon | null)
+                            : null)
                     }
                   />
                 </div>
