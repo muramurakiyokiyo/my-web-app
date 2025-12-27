@@ -29,20 +29,9 @@ function App() {
   };
 
   return (
-    <div style={{ 
-      backgroundColor: '#111827', 
-      minHeight: '100vh', 
-      display: 'flex', 
-      flexDirection: 'column', 
-      alignItems: 'center', 
-      justifyContent: 'center', 
-      padding: '1rem',
-      color: 'white'
-    }}>
-      <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '2rem' }}>
-        キャラクターリスト
-      </h1>
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem' }}>
+    <div className="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4">
+      <h1 className="text-3xl font-bold text-white mb-8">キャラクターリスト</h1>
+      <div className="flex flex-wrap justify-center gap-4">
         {characters.map(char => (
           <CharacterCard 
             key={char.id} 
@@ -52,7 +41,7 @@ function App() {
         ))}
       </div>
       {selectedCharId && (
-        <p style={{ marginTop: '1rem', color: 'white' }}>
+        <p className="text-white mt-4">
           現在選択中: {characters.find(c => c.id === selectedCharId)?.name}
         </p>
       )}
