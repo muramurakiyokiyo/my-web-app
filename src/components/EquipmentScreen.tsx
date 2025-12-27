@@ -1,6 +1,8 @@
 import React from 'react';
 import type { Character } from '../types/character';
 import { armors } from '../data/armors';
+import { getCalculatedStats } from '../utils/characterStats';
+import { CalculatedStatsWindow } from './CalculatedStatsWindow';
 import styles from './EquipmentScreen.module.css';
 
 interface EquipmentScreenProps {
@@ -10,6 +12,7 @@ interface EquipmentScreenProps {
 }
 
 export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onEquip, onClose }) => {
+  const calculatedStats = getCalculatedStats(character);
   return (
     <div className={styles.equipmentScreen}>
       <div className={styles.equipmentScreenContent}>
@@ -26,15 +29,11 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
             alt={character.name}
             className={styles.characterAvatar}
           />
-          <div className={styles.characterStats}>
-            <div>HP: {character.stats.hp} / {character.stats.maxHp}</div>
-            <div>MP: {character.stats.mp} / {character.stats.maxMp}</div>
-            <div>攻撃力: {character.stats.attack}</div>
-            <div>基礎防御力: {character.stats.baseDefense}</div>
-          </div>
+          <h3 className={styles.characterName}>{character.name}</h3>
         </div>
 
-        <div className={styles.armorListSection}>
+        <div className={styles.equipmentScreenBody}>
+          <div className={styles.armorListSection}>
           <h3 className={styles.armorListTitle}>装備を選択</h3>
           <div className={styles.armorList}>
             {armors.map((armor) => {
@@ -53,6 +52,14 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                 </button>
               );
             })}
+          </div>
+          </div>
+
+          <div className={styles.statsDisplaySection}>
+            <CalculatedStatsWindow
+              calculatedStats={calculatedStats}
+              baseStats={character.stats}
+            />
           </div>
         </div>
 

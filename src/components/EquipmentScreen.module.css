@@ -16,7 +16,7 @@
   color: white;
   border-radius: 0.5rem;
   padding: 2rem;
-  max-width: 500px;
+  max-width: 900px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
@@ -74,15 +74,24 @@
   object-fit: cover;
 }
 
-.characterStats {
+.characterName {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.equipmentScreenBody {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-size: 0.875rem;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .armorListSection {
-  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.statsDisplaySection {
+  flex-shrink: 0;
 }
 
 .armorListTitle {
