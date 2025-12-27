@@ -118,6 +118,25 @@ function App() {
     });
   };
 
+  const handleChangeEquipment = (id: string) => {
+    updateCharacters((draft: Character[]) => {
+      const character = draft.find((char: Character) => char.id === id);
+      if (character) {
+        // 装備を初期化していない場合は初期化
+        if (!character.equipment) {
+          character.equipment = {};
+        }
+        
+        // 現在のarmor IDを取得（未装備の場合は-1として扱う）
+        const currentArmorId = character.equipment.armor ?? -1;
+        
+        // 0→1→2→0のように循環させる
+        const nextArmorId = currentArmorId === 2 ? 0 : currentArmorId + 1;
+        character.equipment.armor = nextArmorId;
+      }
+    });
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>キャラクターリスト</h1>
@@ -140,7 +159,8 @@ function App() {
             <CharacterCard 
               key={char.id} 
               character={char} 
-              onSelect={handleSelectCharacter} 
+              onSelect={handleSelectCharacter}
+              onChangeEquipment={handleChangeEquipment}
             />
           ))}
         </AnimatePresence>

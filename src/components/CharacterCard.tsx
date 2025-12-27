@@ -9,9 +9,10 @@ import styles from './CharacterCard.module.css';
 interface CharacterCardProps {
   character: Character;
   onSelect?: (id: string) => void;
+  onChangeEquipment?: (id: string) => void;
 }
 
-export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelect }) => {
+export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelect, onChangeEquipment }) => {
   const calculatedStats = getCalculatedStats(character);
   const borderClass = character.stats.hp < character.stats.maxHp * 0.2 
     ? styles.cardBorderDanger 
@@ -74,6 +75,20 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
           <div>Armor ID: <span className={styles.statValue}>{character.equipment.armor}</span></div>
         )}
       </div>
+      
+      {/* 装備変更ボタン */}
+      <button
+        className={styles.equipmentButton}
+        onClick={(e) => {
+          e.stopPropagation(); // カードのクリックイベントを防ぐ
+          if (onChangeEquipment) {
+            onChangeEquipment(character.id);
+          }
+        }}
+        disabled={isDead}
+      >
+        装備変更
+      </button>
     </motion.div>
   );
 };
