@@ -42,15 +42,27 @@ export function getEquipSlotDisplayName(slot: EquipSlot): string {
   return '';
 }
 
-// 装備品のパラメータID
-export const EquipPropID = {
+// ゲーム内のパラメータID（装備品とキャラクターステータスを統合）
+export const GamePropID = {
+  // 装備品のパラメータ
   Name: 'name',
   Defence: 'defence',
   Attack: 'attack',
   Weight: 'weight',
+  // キャラクターのステータス
+  HP: 'hp',
+  MaxHP: 'maxHp',
+  MP: 'mp',
+  MaxMP: 'maxMp',
+  Defense: 'defense',
+  TotalWeight: 'totalWeight',
 } as const;
 
-export type EquipPropID = typeof EquipPropID[keyof typeof EquipPropID];
+export type GamePropID = typeof GamePropID[keyof typeof GamePropID];
+
+// 後方互換性のため、EquipPropIDをGamePropIDのエイリアスとして定義
+export const EquipPropID = GamePropID;
+export type EquipPropID = GamePropID;
 
 // パラメータの優劣判定タイプ
 export const EquipPropComparisonType = {
@@ -61,53 +73,100 @@ export const EquipPropComparisonType = {
 
 export type EquipPropComparisonType = typeof EquipPropComparisonType[keyof typeof EquipPropComparisonType];
 
-// EquipPropIDの仕様
-interface EquipPropSpec {
+// GamePropIDの仕様
+interface GamePropSpec {
   displayName: string;
   comparisonType: EquipPropComparisonType;
   className: string; // CSSクラス名のキー
   section: 'header' | 'stat'; // 表示セクション
 }
 
-// EquipPropIDに対応する仕様テーブル
-const equipPropSpecs: Record<EquipPropID, EquipPropSpec> = {
-  [EquipPropID.Name]: {
+// GamePropIDに対応する仕様テーブル
+const gamePropSpecs: Record<GamePropID, GamePropSpec> = {
+  // 装備品のパラメータ
+  [GamePropID.Name]: {
     displayName: '名前',
     comparisonType: EquipPropComparisonType.None,
     className: 'equipmentItemName',
     section: 'header',
   },
-  [EquipPropID.Defence]: {
+  [GamePropID.Defence]: {
     displayName: '防御力',
     comparisonType: EquipPropComparisonType.Higher,
     className: '',
     section: 'stat',
   },
-  [EquipPropID.Attack]: {
+  [GamePropID.Attack]: {
     displayName: '攻撃力',
     comparisonType: EquipPropComparisonType.Higher,
     className: '',
     section: 'stat',
   },
-  [EquipPropID.Weight]: {
+  [GamePropID.Weight]: {
     displayName: '重量',
+    comparisonType: EquipPropComparisonType.Lower,
+    className: '',
+    section: 'stat',
+  },
+  // キャラクターのステータス
+  [GamePropID.HP]: {
+    displayName: 'HP',
+    comparisonType: EquipPropComparisonType.Higher,
+    className: '',
+    section: 'stat',
+  },
+  [GamePropID.MaxHP]: {
+    displayName: '最大HP',
+    comparisonType: EquipPropComparisonType.Higher,
+    className: '',
+    section: 'stat',
+  },
+  [GamePropID.MP]: {
+    displayName: 'MP',
+    comparisonType: EquipPropComparisonType.Higher,
+    className: '',
+    section: 'stat',
+  },
+  [GamePropID.MaxMP]: {
+    displayName: '最大MP',
+    comparisonType: EquipPropComparisonType.Higher,
+    className: '',
+    section: 'stat',
+  },
+  [GamePropID.Defense]: {
+    displayName: '防御力',
+    comparisonType: EquipPropComparisonType.Higher,
+    className: '',
+    section: 'stat',
+  },
+  [GamePropID.TotalWeight]: {
+    displayName: '総重量',
     comparisonType: EquipPropComparisonType.Lower,
     className: '',
     section: 'stat',
   },
 };
 
-// EquipPropIDから仕様を一括取得する関数
-export function getEquipPropSpec(propID: EquipPropID): EquipPropSpec {
-  return equipPropSpecs[propID];
+// GamePropIDから仕様を一括取得する関数
+export function getGamePropSpec(propID: GamePropID): GamePropSpec {
+  return gamePropSpecs[propID];
 }
 
-// 装備品のパラメータ（表示名と値）
-export interface EquipProperty {
-  id: EquipPropID;
-  spec: EquipPropSpec; // EquipPropIDの仕様
+// 後方互換性のため、EquipPropSpecをGamePropSpecのエイリアスとして定義
+export type EquipPropSpec = GamePropSpec;
+export function getEquipPropSpec(propID: EquipPropID): EquipPropSpec {
+  return getGamePropSpec(propID);
+}
+
+// ゲーム内のパラメータ（表示名と値）
+export interface GameProperty {
+  id: GamePropID;
+  spec: GamePropSpec; // GamePropIDの仕様
   value: number | string;
 }
+
+// 後方互換性のため、EquipPropertyをGamePropertyのエイリアスとして定義
+export type EquipProperty = GameProperty;
 
 // HPやMPなどのステータス（基本値、equipmentから算出される値は含まない）
 export interface CharacterStats {

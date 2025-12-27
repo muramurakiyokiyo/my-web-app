@@ -1,7 +1,8 @@
 import React from 'react';
-import type { Armor, Weapon, EquipProperty } from '../types/character';
-import { getEquipPropSpec, EquipPropComparisonType } from '../types/character';
+import type { Armor, Weapon } from '../types/character';
+import { getEquipPropSpec } from '../types/character';
 import { getEquipPropIDs, getEquipProperty } from '../utils/equipment';
+import { GamePropertyDisplay } from './GamePropertyDisplay';
 import styles from './EquipmentItemParams.module.css';
 
 interface EquipmentItemParamsProps {
@@ -20,40 +21,6 @@ export const EquipmentItemParams: React.FC<EquipmentItemParamsProps> = ({ item, 
 
   const propIDs = getEquipPropIDs(item);
 
-  // パラメータの値を比較して色を決定する関数
-  const getValueColorClass = (property: EquipProperty, equippedProperty: EquipProperty | null): string => {
-    if (!equippedProperty || typeof property.value !== 'number' || typeof equippedProperty.value !== 'number') {
-      return styles.paramValue;
-    }
-
-    const currentValue = property.value;
-    const equippedValue = equippedProperty.value;
-    const comparisonType = property.spec.comparisonType;
-    
-    // 優劣判定なしの場合は色分けしない
-    if (comparisonType === EquipPropComparisonType.None) {
-      return styles.paramValue;
-    }
-    
-    // 優劣判定タイプに基づいて色を決定
-    if (comparisonType === EquipPropComparisonType.Lower) {
-      // 値が小さい方が高性能
-      if (currentValue < equippedValue) {
-        return `${styles.paramValue} ${styles.paramValueHigher}`; // 小さい = 良い = 青
-      } else if (currentValue > equippedValue) {
-        return `${styles.paramValue} ${styles.paramValueLower}`; // 大きい = 悪い = 赤
-      }
-    } else {
-      // 値が大きい方が高性能
-      if (currentValue > equippedValue) {
-        return `${styles.paramValue} ${styles.paramValueHigher}`; // 大きい = 良い = 青
-      } else if (currentValue < equippedValue) {
-        return `${styles.paramValue} ${styles.paramValueLower}`; // 小さい = 悪い = 赤
-      }
-    }
-    return styles.paramValue;
-  };
-
   return (
     <div className={styles.paramsContainer}>
       <h4 className={styles.paramsTitle}>{item.name}</h4>
@@ -64,16 +31,14 @@ export const EquipmentItemParams: React.FC<EquipmentItemParamsProps> = ({ item, 
             const property = getEquipProperty(item, propID);
             if (!property) return null;
 
-            const equippedProperty = equippedItem ? getEquipProperty(equippedItem, propID) : null;
-            const valueColorClass = getValueColorClass(property, equippedProperty);
+            const compareProperty = equippedItem ? getEquipProperty(equippedItem, propID) : null;
 
             return (
-              <div key={propID} className={styles.paramItem}>
-                <span className={styles.paramLabel}>{property.spec.displayName}:</span>
-                <span className={valueColorClass}>
-                  {typeof property.value === 'number' ? `+${property.value}` : property.value}
-                </span>
-              </div>
+              <GamePropertyDisplay
+                key={propID}
+                property={property}
+                compareProperty={compareProperty}
+              />
             );
           })}
       </div>

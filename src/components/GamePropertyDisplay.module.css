@@ -1,0 +1,24 @@
+.propertyItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.propertyLabel {
+  color: #9ca3af; /* text-gray-400 */
+}
+
+.propertyValue {
+  color: white;
+  font-weight: 600;
+}
+
+.propertyValueHigher {
+  color: #3b82f6; /* text-blue-500 */
+}
+
+.propertyValueLower {
+  color: #ef4444; /* text-red-500 */
+}
+
