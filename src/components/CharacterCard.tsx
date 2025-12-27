@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import type { Character } from '../types/character';
 import { HPBar } from './HPBar';
 import styles from './CharacterCard.module.css';
@@ -15,9 +16,18 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
   const isDead = character.stats.hp <= 0;
 
   return (
-    <div 
+    <motion.div 
       className={`${styles.card} ${borderClass} ${isDead ? styles.cardDead : ''}`}
       onClick={() => onSelect && onSelect(character.id)}
+      initial={{ opacity: 1 }}
+      animate={{ opacity: isDead ? 0.5 : 1 }}
+      exit={{ 
+        opacity: 0,
+        scale: 0.8,
+        filter: 'grayscale(100%)',
+        transition: { duration: 1 }
+      }}
+      layout
     >
       {/* アバター部分 */}
       <div className={styles.avatarSection}>
@@ -49,7 +59,7 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
         <div>攻撃力: <span className={styles.statValue}>{character.stats.attack}</span></div>
         <div>防御力: <span className={styles.statValue}>{character.stats.defense}</span></div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

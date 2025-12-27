@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useImmer } from 'use-immer';
+import { AnimatePresence } from 'framer-motion';
 import { CharacterCard } from './components/CharacterCard';
 import type { Character } from './types/character';
 import './index.css';
@@ -78,33 +79,6 @@ function App() {
   const [characters, updateCharacters] = useImmer<Character[]>(initialCharacters);
   const [selectedCharId, setSelectedCharId] = useState<string | null>(null);
 
-  // HPが0以下のキャラクターを1秒後に削除
-  useEffect(() => {
-    const deadCharacters = characters.filter(char => char.stats.hp <= 0);
-    
-    if (deadCharacters.length > 0) {
-      const timers = deadCharacters.map(char => {
-        return setTimeout(() => {
-          updateCharacters((draft: Character[]) => {
-            const index = draft.findIndex((c: Character) => c.id === char.id);
-            if (index !== -1) {
-              draft.splice(index, 1);
-            }
-          });
-          
-          // 選択中のキャラクターが削除された場合、選択を解除
-          if (selectedCharId === char.id) {
-            setSelectedCharId(null);
-          }
-        }, 1000); // 1秒後に削除
-      });
-
-      return () => {
-        timers.forEach(timer => clearTimeout(timer));
-      };
-    }
-  }, [characters, selectedCharId, updateCharacters]);
-
   const handleSelectCharacter = (id: string) => {
     setSelectedCharId(id);
     
@@ -113,6 +87,19 @@ function App() {
       const character = draft.find((char: Character) => char.id === id);
       if (character) {
         applyDamage(character, 25);
+        
+        // HPが0以下になったら即座に削除（Framer Motionのexitアニメーションで1秒間暗く表示される）
+        if (character.stats.hp <= 0) {
+          const index = draft.findIndex((c: Character) => c.id === id);
+          if (index !== -1) {
+            draft.splice(index, 1);
+          }
+          
+          // 選択中のキャラクターが削除された場合、選択を解除
+          if (selectedCharId === id) {
+            setSelectedCharId(null);
+          }
+        }
       }
     });
   };
@@ -121,13 +108,15 @@ function App() {
     <div className={styles.container}>
       <h1 className={styles.title}>キャラクターリスト</h1>
       <div className={styles.cardList}>
-        {characters.map(char => (
-          <CharacterCard 
-            key={char.id} 
-            character={char} 
-            onSelect={handleSelectCharacter} 
-          />
-        ))}
+        <AnimatePresence mode="popLayout">
+          {characters.map(char => (
+            <CharacterCard 
+              key={char.id} 
+              character={char} 
+              onSelect={handleSelectCharacter} 
+            />
+          ))}
+        </AnimatePresence>
       </div>
       {selectedCharId && (
         <p className={styles.selectedText}>
