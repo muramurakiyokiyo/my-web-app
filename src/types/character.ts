@@ -24,9 +24,18 @@ export interface Armor {
   defence: number;
 }
 
+// Weapon
+export interface Weapon {
+  id: number;
+  attack: number;
+  name: string;
+}
+
 // 装備設定
 export interface Equipment {
   armor?: number; // 装備状態（ID: 0～2）
+  rightHandWeapon?: number; // 右手武器（ID: 0～）
+  leftHandWeapon?: number; // 左手武器（ID: 0～）
 }
 
 // キャラクター全体のデータ

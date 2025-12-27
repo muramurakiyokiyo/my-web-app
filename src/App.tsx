@@ -128,7 +128,7 @@ function App() {
     setEquipmentCharacterId(null);
   };
 
-  const handleEquip = (armorId: number) => {
+  const handleEquip = (type: 'armor' | 'rightHandWeapon' | 'leftHandWeapon', id: number) => {
     if (!equipmentCharacterId) return;
     
     updateCharacters((draft: Character[]) => {
@@ -139,8 +139,14 @@ function App() {
           character.equipment = {};
         }
         
-        // 選択したArmorを装備
-        character.equipment.armor = armorId;
+        // 選択した装備を設定
+        if (type === 'armor') {
+          character.equipment.armor = id;
+        } else if (type === 'rightHandWeapon') {
+          character.equipment.rightHandWeapon = id;
+        } else if (type === 'leftHandWeapon') {
+          character.equipment.leftHandWeapon = id;
+        }
       }
     });
   };
