@@ -49,6 +49,18 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
     return null;
   }, [character, activeTab, hoveredItemId, equippedId]);
 
+  // 現在表示（プレビュー）すべき装備品アイテムを特定
+  const selectedItem = useMemo(() => {
+    const id = hoveredItemId !== null ? hoveredItemId : equippedId;
+    return equipmentList.find(item => item.id === id) as Armor | Weapon | null;
+  }, [hoveredItemId, equippedId, equipmentList]);
+
+  // 現在実際に装備しているアイテムの詳細を取得
+  const currentEquippedItem = useMemo(() => 
+    getEquippedItem(character.equipment, activeTab),
+    [character.equipment, activeTab]
+  );
+
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-50">
@@ -74,13 +86,13 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
             </TabsList>
           </Tabs>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 text-inherit">
             <div className="md:col-span-8 space-y-6">
               {/* タブコンテンツ相当のレイアウト: 左にリスト、右にパラメータ */}
               {/* モバイルでもリストの横にプレビューを表示するためグリッドを使用 */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {/* 装備品リスト (縦並び) */}
-                {/* モバイルでも横にプレビューを出すため高さを制限 */}
+                
+                {/* 1. 装備品リスト (縦並び、独立してスクロール可能) */}
                 <div className="col-span-1 h-[300px] md:h-[550px] overflow-y-auto border rounded-lg bg-white p-2 space-y-2 shadow-sm">
                   {equipmentList.map((item) => {
                     const isEquipped = item.id === equippedId;
@@ -116,68 +128,36 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                   })}
                 </div>
 
-                {/* プレビューとパラメータ (デスクトップでは右側、モバイルではリストの横) */}
+                {/* 2. プレビューとデスクトップ用パラメータ表示 (デスクトップでは右側、モバイルではリストの横) */}
                 <div className="col-span-1 md:col-span-2 flex flex-col gap-4 min-w-0 h-[300px] md:h-[550px]">
                   {/* 3Dモデルプレビュー */}
                   <div className="flex-1 min-h-[150px] md:min-h-[200px]">
                     <ModelViewer
-                      modelUrl={
-                        hoveredItemId !== null
-                          ? (equipmentList.find(item => item.id === hoveredItemId) as Armor | Weapon | null)?.modelUrl
-                          : (equippedId !== undefined
-                                ? (equipmentList.find(item => item.id === equippedId) as Armor | Weapon | null)?.modelUrl
-                                : undefined)
-                      }
-                      fallbackImage={
-                        hoveredItemId !== null
-                          ? (equipmentList.find(item => item.id === hoveredItemId) as Armor | Weapon | null)?.imageUrl
-                          : (equippedId !== undefined
-                                ? (equipmentList.find(item => item.id === equippedId) as Armor | Weapon | null)?.imageUrl
-                                : undefined)
-                      }
+                      modelUrl={selectedItem?.modelUrl}
+                      fallbackImage={selectedItem?.imageUrl}
                     />
                   </div>
 
                   {/* パラメータ数値表示 (デスクトップではプレビューの下に配置) */}
                   <div className="hidden md:block bg-white rounded-lg border p-4 shadow-sm">
                     <EquipmentItemParams
-                      item={
-                        hoveredItemId !== null
-                          ? (equipmentList.find(item => item.id === hoveredItemId) as Armor | Weapon | null)
-                          : (equippedId !== undefined
-                              ? (equipmentList.find(item => item.id === equippedId) as Armor | Weapon | null)
-                              : null)
-                      }
-                      equippedItem={
-                        equippedId !== undefined
-                          ? getEquippedItem(character.equipment, activeTab)
-                          : null
-                      }
+                      item={selectedItem}
+                      equippedItem={currentEquippedItem}
                     />
                   </div>
                 </div>
 
-                {/* パラメータ数値表示 (モバイルでは下段に全幅で配置) */}
+                {/* 3. モバイル用パラメータ表示 (モバイルでは下段に全幅で配置) */}
                 <div className="col-span-2 md:hidden bg-white rounded-lg border p-4 shadow-sm">
                   <EquipmentItemParams
-                    item={
-                      hoveredItemId !== null
-                        ? (equipmentList.find(item => item.id === hoveredItemId) as Armor | Weapon | null)
-                        : (equippedId !== undefined
-                            ? (equipmentList.find(item => item.id === equippedId) as Armor | Weapon | null)
-                            : null)
-                    }
-                    equippedItem={
-                      equippedId !== undefined
-                        ? getEquippedItem(character.equipment, activeTab)
-                        : null
-                    }
+                    item={selectedItem}
+                    equippedItem={currentEquippedItem}
                   />
                 </div>
               </div>
             </div>
 
-            {/* サイドバー: ステータスと現在の装備 */}
+            {/* サイドバー: ステータス比較と現在の全装備 */}
             <div className="md:col-span-4 space-y-6">
               <div className="bg-white rounded-lg border p-4 shadow-sm">
                 <h3 className="text-sm font-bold mb-3 text-slate-500 uppercase tracking-wider">ステータス</h3>
