@@ -1,8 +1,7 @@
 import React from 'react';
 import type { Character, EquipSlot } from '../types/character';
-import { getEquipSlotDisplayName, equipSlots } from '../types/character';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { EquipmentSlotTabs } from './EquipmentSlotTabs';
 import { EquipmentList } from './EquipmentList';
 import { EquipmentStatus } from './EquipmentStatus';
 import { CharacterStatus } from './CharacterStatus';
@@ -38,20 +37,12 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* タブを最上段（全幅）に配置 */}
-          <Tabs 
-            value={activeTab} 
-            onValueChange={(v) => setActiveTab(v as any)}
+          {/* 装備スロット切り替えタブ */}
+          <EquipmentSlotTabs
+            value={activeTab}
+            onValueChange={setActiveTab}
             className="w-full"
-          >
-            <TabsList className="grid w-full grid-cols-3">
-              {equipSlots.map((slot) => (
-                <TabsTrigger key={slot} value={slot}>
-                  {getEquipSlotDisplayName(slot)}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+          />
 
           {/* 3分割レイアウト: [リスト] [詳細] [サイドバー] */}
           <div className="grid grid-cols-2 md:grid-cols-12 gap-6 text-inherit">
