@@ -9,7 +9,6 @@ import { EquipmentItemParams } from './EquipmentItemParams';
 import { ModelViewer } from './ModelViewer';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -88,12 +87,15 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 text-inherit">
             <div className="md:col-span-8 space-y-6">
-              {/* タブコンテンツ相当のレイアウト: 左にリスト、右にパラメータ */}
-              {/* モバイルでもリストの横にプレビューを表示するためグリッドを使用 */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+              {/* メインエリア内レイアウト (モバイル・デスクトップ共通): 
+                  内部は常に 2 列構成
+                  1列目: リスト (縦2行分を占有)
+                  2列目: 上段にモデル、下段にパラメータ
+              */}
+              <div className="grid grid-cols-2 gap-6 md:h-[550px]">
                 
-                {/* 1. 装備品リスト (縦並び、独立してスクロール可能) */}
-                <div className="col-span-1 h-[300px] md:h-[550px] overflow-y-auto border rounded-lg bg-white p-2 space-y-2 shadow-sm">
+                {/* 1. 装備品リスト: 常に左側 1 列目、2 行分 (row-span-2) を占有 */}
+                <div className="col-span-1 row-span-2 h-[400px] md:h-full overflow-y-auto border rounded-lg bg-white p-2 space-y-2 shadow-sm">
                   {equipmentList.map((item) => {
                     const isEquipped = item.id === equippedId;
                     
@@ -128,27 +130,16 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
                   })}
                 </div>
 
-                {/* 2. プレビューとデスクトップ用パラメータ表示 (デスクトップでは右側、モバイルではリストの横) */}
-                <div className="col-span-1 md:col-span-2 flex flex-col gap-4 min-w-0 h-[300px] md:h-[550px]">
-                  {/* 3Dモデルプレビュー */}
-                  <div className="flex-1 min-h-[150px] md:min-h-[200px]">
-                    <ModelViewer
-                      modelUrl={selectedItem?.modelUrl}
-                      fallbackImage={selectedItem?.imageUrl}
-                    />
-                  </div>
-
-                  {/* パラメータ数値表示 (デスクトップではプレビューの下に配置) */}
-                  <div className="hidden md:block bg-white rounded-lg border p-4 shadow-sm">
-                    <EquipmentItemParams
-                      item={selectedItem}
-                      equippedItem={currentEquippedItem}
-                    />
-                  </div>
+                {/* 2. プレビュー: 2 列目の上段 */}
+                <div className="col-span-1 h-[200px] md:h-auto min-h-[150px]">
+                  <ModelViewer
+                    modelUrl={selectedItem?.modelUrl}
+                    fallbackImage={selectedItem?.imageUrl}
+                  />
                 </div>
 
-                {/* 3. モバイル用パラメータ表示 (モバイルでは下段に全幅で配置) */}
-                <div className="col-span-2 md:hidden bg-white rounded-lg border p-4 shadow-sm">
+                {/* 3. パラメータ詳細: 2 列目の下段 */}
+                <div className="col-span-1 bg-white rounded-lg border p-4 shadow-sm overflow-y-auto">
                   <EquipmentItemParams
                     item={selectedItem}
                     equippedItem={currentEquippedItem}
@@ -160,14 +151,14 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
             {/* サイドバー: ステータス比較と現在の全装備 */}
             <div className="md:col-span-4 space-y-6">
               <div className="bg-white rounded-lg border p-4 shadow-sm">
-                <h3 className="text-sm font-bold mb-3 text-slate-500 uppercase tracking-wider">ステータス</h3>
+                <h3 className="text-xs font-bold mb-3 text-slate-400 uppercase tracking-widest">ステータス</h3>
                 <CalculatedStatsWindow
                   calculatedStats={previewStats || currentStats}
                   compareStats={previewStats ? currentStats : undefined}
                 />
               </div>
               <div className="bg-white rounded-lg border p-4 shadow-sm">
-                <h3 className="text-sm font-bold mb-3 text-slate-500 uppercase tracking-wider">現在の装備</h3>
+                <h3 className="text-xs font-bold mb-3 text-slate-400 uppercase tracking-widest">現在の装備</h3>
                 <EquipmentDisplay character={character} />
               </div>
             </div>
