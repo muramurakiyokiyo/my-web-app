@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import type { Character } from '../types/character';
 import { getCalculatedStats } from '../utils/characterStats';
@@ -15,12 +15,6 @@ interface CharacterCardProps {
 }
 
 export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelect, onOpenEquipment }) => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   const calculatedStats = getCalculatedStats(character.stats, character.equipment);
   const isDead = character.stats.hp <= 0;
   const isLowHP = character.stats.hp < character.stats.maxHp * 0.2;
@@ -34,9 +28,6 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
     ? `${baseDefense}+${armorDefense}` 
     : `${baseDefense}`;
 
-  // マウントされる前は何も出さない
-  if (!isMounted) return null;
-
   return (
     <motion.div 
       initial={{ opacity: 1 }}
@@ -48,11 +39,11 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
         transition: { duration: 1 }
       }}
       layout
-      className="cursor-pointer"
+      className="cursor-pointer w-full"
       onClick={() => !isDead && onSelect && onSelect(character.id)}
     >
       <Card className={cn(
-        "w-[280px] transition-all duration-300 overflow-hidden",
+        "transition-all duration-300 overflow-hidden",
         isLowHP ? "border-red-500 shadow-lg shadow-red-200" : "hover:border-primary",
         isDead && "grayscale opacity-60"
       )}>
