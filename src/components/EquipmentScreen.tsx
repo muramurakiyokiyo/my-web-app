@@ -49,36 +49,26 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
     <div className={styles.equipmentScreen}>
       <div className={styles.equipmentScreenContent}>
         <div className={styles.equipmentScreenHeader}>
-          <h2 className={styles.equipmentScreenTitle}>{character.name}の装備</h2>
           <button className={styles.closeButton} onClick={onClose}>
             ×
           </button>
         </div>
-        
-        <div className={styles.characterInfo}>
-          <img
-            src={character.avatarUrl || "/default-avatar.png"}
-            alt={character.name}
-            className={styles.characterAvatar}
-          />
-          <h3 className={styles.characterName}>{character.name}</h3>
+
+        {/* タブを最上段（全幅）に配置 */}
+        <div className={styles.tabContainer}>
+          {equipSlots.map((slot) => (
+            <button
+              key={slot}
+              className={`${styles.tab} ${activeTab === slot ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab(slot)}
+            >
+              {getEquipSlotDisplayName(slot)}
+            </button>
+          ))}
         </div>
 
         <div className={styles.equipmentScreenBody}>
           <div className={styles.equipmentListSection}>
-            {/* タブ */}
-            <div className={styles.tabContainer}>
-              {equipSlots.map((slot) => (
-                <button
-                  key={slot}
-                  className={`${styles.tab} ${activeTab === slot ? styles.tabActive : ''}`}
-                  onClick={() => setActiveTab(slot)}
-                >
-                  {getEquipSlotDisplayName(slot)}
-                </button>
-              ))}
-            </div>
-
             {/* タブコンテンツ */}
             <div className={styles.tabContent}>
               <div className={styles.equipmentListContainer}>
@@ -154,10 +144,6 @@ export const EquipmentScreen: React.FC<EquipmentScreenProps> = ({ character, onE
             <EquipmentDisplay character={character} />
           </div>
         </div>
-
-        <button className={styles.backButton} onClick={onClose}>
-          戻る
-        </button>
       </div>
     </div>
   );
