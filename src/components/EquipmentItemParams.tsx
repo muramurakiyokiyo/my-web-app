@@ -3,7 +3,6 @@ import type { Armor, Weapon } from '../types/character';
 import { getEquipPropSpec } from '../types/character';
 import { getEquipPropIDs, getEquipProperty } from '../utils/equipment';
 import { GamePropertyDisplay } from './GamePropertyDisplay';
-import styles from './EquipmentItemParams.module.css';
 
 interface EquipmentItemParamsProps {
   item: Armor | Weapon | null;
@@ -13,8 +12,8 @@ interface EquipmentItemParamsProps {
 export const EquipmentItemParams: React.FC<EquipmentItemParamsProps> = ({ item, equippedItem }) => {
   if (!item) {
     return (
-      <div className={styles.paramsContainer}>
-        <div className={styles.paramsEmpty}>装備品を選択してください</div>
+      <div className="h-full flex items-center justify-center text-slate-400 italic text-sm">
+        装備品を選択してください
       </div>
     );
   }
@@ -22,9 +21,9 @@ export const EquipmentItemParams: React.FC<EquipmentItemParamsProps> = ({ item, 
   const propIDs = getEquipPropIDs(item);
 
   return (
-    <div className={styles.paramsContainer}>
-      <h4 className={styles.paramsTitle}>{item.name}</h4>
-      <div className={styles.paramsList}>
+    <div className="space-y-4">
+      <h4 className="font-bold text-lg text-slate-800 border-b pb-2">{item.name}</h4>
+      <div className="space-y-1">
         {propIDs
           .filter(propID => getEquipPropSpec(propID).section === 'stat')
           .map((propID) => {
@@ -45,4 +44,3 @@ export const EquipmentItemParams: React.FC<EquipmentItemParamsProps> = ({ item, 
     </div>
   );
 };
-

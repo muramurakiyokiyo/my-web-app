@@ -1,7 +1,7 @@
 import React from 'react';
 import type { GameProperty } from '../types/character';
 import { EquipPropComparisonType } from '../types/character';
-import styles from './GamePropertyDisplay.module.css';
+import { cn } from "@/lib/utils";
 
 interface GamePropertyDisplayProps {
   property: GameProperty;
@@ -12,7 +12,7 @@ export const GamePropertyDisplay: React.FC<GamePropertyDisplayProps> = ({ proper
   // 優劣判定に基づいて色を決定する関数
   const getValueColorClass = (): string => {
     if (!compareProperty || typeof property.value !== 'number' || typeof compareProperty.value !== 'number') {
-      return styles.propertyValue;
+      return "text-slate-900";
     }
 
     const currentValue = property.value;
@@ -21,26 +21,26 @@ export const GamePropertyDisplay: React.FC<GamePropertyDisplayProps> = ({ proper
 
     // 優劣判定なしの場合は色分けしない
     if (comparisonType === EquipPropComparisonType.None) {
-      return styles.propertyValue;
+      return "text-slate-900";
     }
 
     // 優劣判定タイプに基づいて色を決定
     if (comparisonType === EquipPropComparisonType.Lower) {
       // 値が小さい方が高性能
       if (currentValue < compareValue) {
-        return `${styles.propertyValue} ${styles.propertyValueHigher}`; // 小さい = 良い = 青
+        return "text-blue-600 font-bold"; // 小さい = 良い = 青
       } else if (currentValue > compareValue) {
-        return `${styles.propertyValue} ${styles.propertyValueLower}`; // 大きい = 悪い = 赤
+        return "text-red-600 font-bold"; // 大きい = 悪い = 赤
       }
     } else {
       // 値が大きい方が高性能
       if (currentValue > compareValue) {
-        return `${styles.propertyValue} ${styles.propertyValueHigher}`; // 大きい = 良い = 青
+        return "text-blue-600 font-bold"; // 大きい = 良い = 青
       } else if (currentValue < compareValue) {
-        return `${styles.propertyValue} ${styles.propertyValueLower}`; // 小さい = 悪い = 赤
+        return "text-red-600 font-bold"; // 小さい = 悪い = 赤
       }
     }
-    return styles.propertyValue;
+    return "text-slate-900";
   };
 
   const valueColorClass = getValueColorClass();
@@ -57,15 +57,15 @@ export const GamePropertyDisplay: React.FC<GamePropertyDisplayProps> = ({ proper
   );
 
   return (
-    <div className={styles.propertyItem}>
-      <span className={styles.propertyLabel}>{property.spec.displayName}:</span>
-      <span className={valueColorClass}>
+    <div className="flex justify-between items-center py-1.5 border-b border-slate-100 last:border-0 text-sm">
+      <span className="text-slate-500 font-medium">{property.spec.displayName}:</span>
+      <span className={cn("font-mono", valueColorClass)}>
         {compareProperty && !isSameValue ? (
-          <>
-            <span className={styles.propertyValueBefore}>{compareDisplayValue}</span>
-            <span className={styles.propertyValueArrow}> → </span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 line-through text-xs">{compareDisplayValue}</span>
+            <span className="text-slate-400 text-[10px]">▶</span>
             <span>{displayValue}</span>
-          </>
+          </div>
         ) : (
           <span>{displayValue}</span>
         )}
@@ -73,4 +73,3 @@ export const GamePropertyDisplay: React.FC<GamePropertyDisplayProps> = ({ proper
     </div>
   );
 };
-

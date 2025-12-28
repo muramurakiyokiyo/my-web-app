@@ -4,7 +4,9 @@ import type { Character } from '../types/character';
 import { getCalculatedStats } from '../utils/characterStats';
 import { armors } from '../data/armors';
 import { HPBar } from './HPBar';
-import styles from './CharacterCard.module.css';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface CharacterCardProps {
   character: Character;
@@ -20,10 +22,8 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
   }, []);
 
   const calculatedStats = getCalculatedStats(character.stats, character.equipment);
-  const borderClass = character.stats.hp < character.stats.maxHp * 0.2 
-    ? styles.cardBorderDanger 
-    : styles.cardBorderNormal;
   const isDead = character.stats.hp <= 0;
+  const isLowHP = character.stats.hp < character.stats.maxHp * 0.2;
   
   // 防御力の表示用（baseDefense + armor.defence）
   const baseDefense = character.stats.baseDefense;
@@ -39,8 +39,6 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
 
   return (
     <motion.div 
-      className={`${styles.card} ${borderClass} ${isDead ? styles.cardDead : ''}`}
-      onClick={() => onSelect && onSelect(character.id)}
       initial={{ opacity: 1 }}
       animate={{ opacity: isDead ? 0.5 : 1 }}
       exit={{ 
@@ -50,55 +48,79 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelec
         transition: { duration: 1 }
       }}
       layout
+      className="cursor-pointer"
+      onClick={() => !isDead && onSelect && onSelect(character.id)}
     >
-      {/* アバター部分 */}
-      <div className={styles.avatarSection}>
-        <img 
-          src={character.avatarUrl || "/default-avatar.png"} 
-          alt={character.name} 
-          className={styles.avatar}
-        />
-        <h2 className={styles.characterName}>{character.name}</h2>
-      </div>
+      <Card className={cn(
+        "w-[280px] transition-all duration-300 overflow-hidden",
+        isLowHP ? "border-red-500 shadow-lg shadow-red-200" : "hover:border-primary",
+        isDead && "grayscale opacity-60"
+      )}>
+        {/* アバター部分 */}
+        <CardHeader className="p-4 flex flex-row items-center gap-4 space-y-0">
+          <img 
+            src={character.avatarUrl || "/default-avatar.png"} 
+            alt={character.name} 
+            className="w-12 h-12 rounded-full border shadow-sm"
+          />
+          <CardTitle className="text-lg font-bold truncate">{character.name}</CardTitle>
+        </CardHeader>
 
-      {/* HPバーとMPバー */}
-      <div className={styles.statsSection}>
-        <div className={styles.statRow}>
-          <span>HP</span>
-          <span>{character.stats.hp} / {character.stats.maxHp}</span>
-        </div>
-        <HPBar current={character.stats.hp} max={character.stats.maxHp} color="green" />
+        {/* HPバーとMPバー */}
+        <CardContent className="p-4 pt-0 space-y-4">
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs font-medium">
+              <span>HP</span>
+              <span>{character.stats.hp} / {character.stats.maxHp}</span>
+            </div>
+            <HPBar current={character.stats.hp} max={character.stats.maxHp} color={isLowHP ? "red" : "green"} />
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs font-medium">
+              <span>MP</span>
+              <span>{character.stats.mp} / {character.stats.maxMp}</span>
+            </div>
+            <HPBar current={character.stats.mp} max={character.stats.maxMp} color="blue" />
+          </div>
+
+          {/* その他のステータス */}
+          <div className="grid grid-cols-2 gap-2 text-sm pt-2">
+            <div className="flex flex-col">
+              <span className="text-muted-foreground text-[10px] uppercase">攻撃力</span>
+              <span className="font-bold">{calculatedStats.attack}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-muted-foreground text-[10px] uppercase">防御力</span>
+              <span className="font-bold">{defenseDisplay}</span>
+            </div>
+            {character.equipment?.armor !== undefined && (
+              <div className="col-span-2 flex flex-col pt-1 border-t">
+                <span className="text-muted-foreground text-[10px] uppercase">防具</span>
+                <span className="truncate">{armors.find(a => a.id === character.equipment!.armor)?.name || '不明'}</span>
+              </div>
+            )}
+          </div>
+        </CardContent>
         
-        <div className={styles.statRowWithMargin}>
-          <span>MP</span>
-          <span>{character.stats.mp} / {character.stats.maxMp}</span>
-        </div>
-        <HPBar current={character.stats.mp} max={character.stats.maxMp} color="blue" />
-      </div>
-
-      {/* その他のステータス */}
-      <div className={styles.otherStats}>
-        <div>攻撃力: <span className={styles.statValue}>{calculatedStats.attack}</span></div>
-        <div>防御力: <span className={styles.statValue}>{defenseDisplay}</span></div>
-        {character.equipment?.armor !== undefined && (
-          <div>防具: <span className={styles.statValue}>{armors.find(a => a.id === character.equipment!.armor)?.name || '不明'}</span></div>
-        )}
-      </div>
-      
-      {/* 装備変更ボタン */}
-      <button
-        className={styles.equipmentButton}
-        onClick={(e) => {
-          e.stopPropagation(); // カードのクリックイベントを防ぐ
-          if (onOpenEquipment) {
-            onOpenEquipment(character.id);
-          }
-        }}
-        disabled={isDead}
-      >
-        装備変更！
-      </button>
+        {/* 装備変更ボタン */}
+        <CardFooter className="p-4 pt-0">
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full"
+            disabled={isDead}
+            onClick={(e) => {
+              e.stopPropagation(); // カードのクリックイベントを防ぐ
+              if (onOpenEquipment) {
+                onOpenEquipment(character.id);
+              }
+            }}
+          >
+            装備変更！
+          </Button>
+        </CardFooter>
+      </Card>
     </motion.div>
   );
 };
-

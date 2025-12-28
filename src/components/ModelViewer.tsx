@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stage, useGLTF } from '@react-three/drei';
-import styles from './ModelViewer.module.css';
 
 interface ModelProps {
   url: string;
@@ -20,18 +19,18 @@ interface ModelViewerProps {
 export const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, fallbackImage }) => {
   if (!modelUrl) {
     return (
-      <div className={styles.container}>
+      <div className="w-full h-full flex items-center justify-center bg-slate-100 rounded-lg overflow-hidden">
         {fallbackImage ? (
-          <img src={fallbackImage} alt="Fallback" className={styles.fallbackImage} />
+          <img src={fallbackImage} alt="Fallback" className="max-w-[80%] max-h-[80%] object-contain" />
         ) : (
-          <div className={styles.placeholder}>3Dモデルなし</div>
+          <div className="text-slate-400 text-sm">3Dモデルなし</div>
         )}
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
+    <div className="w-full h-full min-h-[200px] bg-slate-900 rounded-lg overflow-hidden border border-slate-800 shadow-inner">
       <Canvas shadows camera={{ position: [0, 0, 150], fov: 40 }}>
         <Suspense fallback={null}>
           <Stage environment="city" intensity={0.6}>
@@ -43,5 +42,3 @@ export const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, fallbackImag
     </div>
   );
 };
-
-

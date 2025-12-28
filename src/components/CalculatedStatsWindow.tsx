@@ -2,7 +2,6 @@ import React from 'react';
 import type { CalculatedStats } from '../types/character';
 import { getCalculatedStatsAsProperties } from '../utils/characterStats';
 import { GamePropertyDisplay } from './GamePropertyDisplay';
-import styles from './CalculatedStatsWindow.module.css';
 
 interface CalculatedStatsWindowProps {
   calculatedStats: CalculatedStats;
@@ -22,20 +21,15 @@ export const CalculatedStatsWindow: React.FC<CalculatedStatsWindowProps> = ({
   };
 
   return (
-    <div className={styles.statsDisplay}>
-      <div className={styles.statsSection}>
-        <h4 className={styles.statsSectionTitle}>ステータス</h4>
-        <div className={styles.statsRow}>
-          {properties.map((property) => (
-            <GamePropertyDisplay
-              key={property.id}
-              property={property}
-              compareProperty={getCompareProperty(property.id)}
-            />
-          ))}
-        </div>
-      </div>
+    <div className="space-y-1">
+      {/* ステータスセクション */}
+      {properties.map((property) => (
+        <GamePropertyDisplay
+          key={property.id}
+          property={property}
+          compareProperty={getCompareProperty(property.id)}
+        />
+      ))}
     </div>
   );
 };
-

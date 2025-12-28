@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './HPBar.module.css';
+import { Progress } from "@/components/ui/progress";
 
 interface HPBarProps {
   current: number;
@@ -11,19 +11,19 @@ export const HPBar: React.FC<HPBarProps> = ({ current, max, color = 'green' }) =
   const percent = (current / max) * 100;
   const displayPercent = Math.max(0, Math.min(100, percent)); // 0-100%にクランプ
 
-  const colorClass = color === 'blue' 
-    ? styles.barFillBlue 
+  const indicatorColor = color === 'blue' 
+    ? "bg-blue-500" 
     : color === 'red' 
-    ? styles.barFillRed 
-    : styles.barFillGreen;
+    ? "bg-red-500" 
+    : "bg-green-500";
 
   return (
-    <div className={styles.barContainer}>
-      <div 
-        className={`${styles.barFill} ${colorClass}`}
-        style={{ width: `${displayPercent}%` }}
+    <div className="w-full">
+      <Progress 
+        value={displayPercent} 
+        className="h-2" 
+        indicatorClassName={indicatorColor}
       />
     </div>
   );
 };
-
